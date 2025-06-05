@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel - მომხმარებლები</title>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+  />
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css"
+  />
+  <style>
+    :root {
+      --sidebar-width: 250px;
+      --sidebar-collapsed-width: 60px;
+      --primary-color: #27b654;
+      --danger-color: #e44141;
+      --text-color: #333;
+      --light-bg: #f3f4f6;
+    }
+
+    body {
+      background-color: var(--light-bg);
+      font-family: "Roboto", sans-serif;
+      color: var(--text-color);
+    }
+
+    #viewport {
+      padding-left: var(--sidebar-width);
+      transition: all 0.3s ease;
+    }
+
+    #content {
+      width: 100%;
+      position: relative;
+      margin-right: 0;
+    }
+
+    #sidebar {
+      z-index: 1000;
+      position: fixed;
+      left: 0;
+      width: var(--sidebar-width);
+      height: 100%;
+      overflow-y: auto;
+      background: #37474f;
+      transition: all 0.3s ease;
+    }
+
+    #sidebar header {
+      background-color: #263238;
+      font-size: 20px;
+      line-height: 52px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    #sidebar header a {
+      color: #fff;
+      display: block;
+      text-decoration: none;
+    }
+
+    #sidebar .nav {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    #sidebar .nav a {
+      background: none;
+      border-bottom: 1px solid #455a64;
+      color: #cfd8dc;
+      font-size: 14px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    #sidebar .nav a:hover {
+      background: none;
+      color: #eceff1;
+    }
+
+    #sidebar .nav a i {
+      margin-right: 16px;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    #sidebar .nav a .nav-text {
+      transition: opacity 0.3s ease;
+    }
+
+    .navbar-user {
+      border: 1px solid white;
+      background-color: white;
+      border-radius: 20px;
+      padding: 5px 15px;
+    }
+
+
+
+    .search-bar-container {
+      width: 92%;
+      max-width: 1200px;
+      border: 1px solid #fff;
+      height: auto;
+      min-height: 85px;
+      margin: 0 auto 25px;
+
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    .search-actual-bar input {
+      width: 100%;
+      height: 40px;
+      border-radius: 9px;
+      border: 1px solid rgba(202, 199, 199, 0.4);
+      padding-left: 15px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-actual-bar input:focus {
+      border-color: var(--primary-color) !important;
+      box-shadow: 0 0 0 2px rgba(39, 182, 84, 0.2);
+    }
+
+    .search-bar-container-1 {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .search-actual-bar {
+      flex: 1;
+    }
+
+    .search-button input {
+      border: none;
+      border-radius: 5px;
+      border: 1px solid rgba(65, 138, 72, 0.7);
+      padding: 10px 28px;
+      color: black;
+      cursor: pointer;
+      background-color: white;
+      white-space: nowrap;
+    }
+
+    .search-button input:hover {
+      background-color: rgba(233, 234, 233, 0.58);
+    }
+
+
+    .customer-section-container {
+      width: 92%;
+      max-width: 1200px;
+      border: 1px solid #fff;
+      border-radius: 8px;
+      margin: 0 auto;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .header-button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .customer-section-header h4 {
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .header-button-add button {
+      border: none;
+      border-radius: 5px;
+      background-color: var(--primary-color);
+      padding: 10px 28px;
+      color: white;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .header-button-add button:hover {
+      background-color: #418a48;
+    }
+
+
+    .table-responsive-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    th {
+      background-color: rgba(229, 231, 235, 0.7);
+      padding: 12px 8px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    td {
+      padding: 12px 8px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background-color: rgba(229, 231, 235, 0.4);
+    }
+
+    .button-change {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      margin: 3px;
+      white-space: nowrap;
+    }
+
+    .button-change:hover {
+      background-color: #50aa59;
+    }
+
+    .button-remove {
+      background-color: var(--danger-color);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      margin: 3px;
+      white-space: nowrap;
+    }
+
+    .button-remove:hover {
+      background-color: rgb(194, 59, 59);
+    }
+
+
+    td ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    td ul li {
+      display: inline-block;
+      margin: 2px;
+    }
+
+    td ul li:not(:last-child):after {
+      content: ", ";
+    }
+
+
+    @media (max-width: 992px) {
+      #viewport {
+        padding-left: var(--sidebar-collapsed-width);
+      }
+
+      #sidebar {
+        width: var(--sidebar-collapsed-width);
+      }
+
+      #sidebar .nav a {
+        padding: 16px 10px;
+        justify-content: center;
+      }
+
+      #sidebar .nav a i {
+        margin-right: 0;
+        font-size: 1.4em;
+      }
+
+      #sidebar .nav a .nav-text {
+        display: none;
+      }
+
+      #sidebar header a img {
+        width: 40px;
+        padding: 5px;
+      }
+    }
+
+
+    @media (max-width: 768px) {
+      .search-bar-container-1 {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .search-button input {
+        width: 100%;
+      }
+
+      .header-button {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .header-button-add {
+        width: 100%;
+      }
+
+      .header-button-add button {
+        width: 100%;
+      }
+    }
+
+
+    @media (max-width: 576px) {
+      #sidebar {
+        width: 50px;
+      }
+
+      #viewport {
+        padding-left: 50px;
+      }
+
+      .navbar-user a {
+        font-size: 14px;
+        padding: 5px 10px;
+      }
+
+
+
+      .table-responsive-container {
+        overflow-x: visible;
+      }
+
+      table {
+        display: block;
+        min-width: 100%;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody {
+        display: block;
+      }
+
+      tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+      }
+
+      td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px !important;
+        text-align: left !important;
+        border-bottom: 1px solid #eee;
+      }
+
+      td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        margin-right: 10px;
+        flex: 1;
+      }
+
+      td > * {
+        flex: 2;
+        text-align: right;
+      }
+
+      td:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        background-color: #f5f5f5;
+        font-weight: bold;
+      }
+
+      td:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-bottom: none;
+      }
+
+      td div {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .button-change,
+      .button-remove {
+        width: auto;
+        margin: 3px 0;
+      }
+
+      td ul {
+        text-align: right;
+      }
+
+      td ul li {
+        display: inline;
+      }
+    }
+
+
+    @media (max-width: 400px) {
+      #sidebar {
+        width: 40px;
+      }
+
+      #viewport {
+        padding-left: 40px;
+      }
+
+      #sidebar .nav a {
+        padding: 12px 5px;
+      }
+
+      #sidebar .nav a i {
+        font-size: 1.2em;
+      }
+
+      .search-bar-container,
+      .customer-section-container {
+        width: 98%;
+        padding: 10px;
+      }
+
+      td div {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .button-change,
+      .button-remove {
+        width: 100%;
+      }
+    }
+
+        .button-change {
+      background-color: #27b654;
+      color: white;
+    }
+    .button-change:hover {
+      background-color: #50aa59;
+    }
+
+    .button-remove {
+      background-color: rgb(228, 65, 65);
+      color: white;
+    }
+    .button-remove:hover {
+      background-color: rgb(194, 59, 59);
+    }
+
+    .items-to-flex {
+      display: flex;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .settings-container form {
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    .user-info input {
+      width: 92%;
+      height: 40px;
+      padding-left: 10px;
+      border-radius: 7px;
+      border: 1px solid rgba(202, 199, 199, 0.374);
+    }
+
+    .user-info select {
+      width: 92%;
+      height: 40px;
+      padding-left: 7px;
+      border-radius: 7px;
+      border: 1px solid rgba(202, 199, 199, 0.374);
+    }
+
+    .user-info-mail input {
+      width: 96%;
+      height: 40px;
+      padding-left: 10px;
+      border-radius: 7px;
+      border: 1px solid rgba(202, 199, 199, 0.374);
+      margin-top: 12px;
+    }
+
+    .button-save input {
+      border: none;
+      border-radius: 5px;
+      background-color: #50aa59;
+      padding-left: 28px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-right: 28px;
+      color: white;
+      cursor: pointer;
+    }
+    .items-to-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.address-block {
+  margin-bottom: 10px;
+}
+
+.address-select {
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 300px;
+  font-size: 14px;
+}
+
+.preference-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.preference-block {
+  background-color: #fff;
+  border-left: 4px solid #007bff;
+  border-radius: 6px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.preference-block label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+.opt-in-out {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.opt-in-out input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #007bff;
+}
+
+.opt-in-out label {
+  margin-left: 4px;
+  font-size: 14px;
+  color: #444;
+}
+
+  </style>
+</head>
+<body>
+<div id="viewport">
+  <div id="sidebar">
+    <header>
+      <a href="/admin/dashboard"
+      ><img
+              src="/uploads/notify-center-logo.png"
+              style="width: 90px"
+              height="auto"
+              alt=""
+      /></a>
+    </header>
+    <ul class="nav">
+      <li>
+        <a href="/admin/dashboard"> <i class="zmdi zmdi-view-dashboard"></i> Dashboard </a>
+      </li>
+      <li>
+        <a href="/admin/customers"> <i class="zmdi zmdi-link"></i> მომხმარებლები </a>
+      </li>
+      <li>
+        <a href="/admin/addresses"> <i class="zmdi zmdi-widgets"></i> მისამართები </a>
+      </li>
+      <li>
+        <a href="/admin/preferences"> <i class="zmdi zmdi-calendar"></i> Preferences </a>
+      </li>
+      <li>
+        <a href="/admin/reporting"> <i class="zmdi zmdi-info-outline"></i> Reporting </a>      </li>
+    </ul>
+  </div>
+
+  <div id="content">
+    <nav class="navbar navbar-default" style="background-color: #f4f6f9">
+      <div class="container-fluid" style="background-color: #f4f6f9">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="navbar-user">
+            <a href="#" th:text="${user.username}">გიორგი ფუტკარაძე</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid" id="update-container">
+      <div class="customer-section-container">
+        <div
+                class="header-button"
+                style="display: flex; justify-content: space-between"
+        >
+          <div class="customer-section-header">
+            <h4>მომხმარებლების განახლება</h4>
+          </div>
+          <div class="header-button-add">
+            <form method="get" action="/admin/customers">
+              <button onclick="listAppear()">უკან დაბრუნება</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="settings-container" th:each="customerInfo : ${customer}">
+          <form style="text-align: center" id="user-form" method="post" th:action="@{/customer/update-customer/{customerId}(customerId=${customerInfo.userId})}">
+            <input type="hidden" name="_method" value="PUT">
+
+            <div class="items-to-flex">
+              <div
+                      class="first-name-input user-info"
+                      id="first_name"
+                      style="flex: 1"
+              >
+                <input type="text" placeholder="სახელი" th:value="${customerInfo.firstName}" name="firstName" />
+              </div>
+              <div class="last-name-input user-info" style="flex: 1">
+                <input type="text" placeholder="გვარი" th:value="${customerInfo.lastName}" name="lastName" />
+              </div>
+            </div>
+            <div class="last-name-input user-info-mail">
+              <input type="text" placeholder="ელექტრონული ფოსტა" th:value="${customerInfo.mail}" name="mail"/>
+            </div>
+            <div class="items-to-flex" style="margin-top: 12px">
+              <div
+                      class="first-name-input user-info"
+                      id="first_name"
+                      style="flex: 1"
+              >
+                <input
+                        type="tel"
+                        id="tel"
+                        placeholder="ნომერი"
+                        value="+995 " name="number" th:value="${customerInfo.number}"
+                />
+              </div>
+
+              <div class="last-name-input user-info" style="flex: 1">
+                <input type="text" placeholder="იურიდიული მისამართი" name="legalAddress" th:value="${customerInfo.legalAddress}"/>
+              </div>
+            </div>
+            <div class="items-to-flex">
+              <div id="existing-address-container">
+
+                <div th:each="addr, iterStat : ${customer.address}" class="address-block">
+                  <select th:name="'addressDTOList[' + ${iterStat.index} + '].addressType.addressTypeId'"
+                          class="address-select existing"
+                          th:attr="data-index=${iterStat.index}">
+                    <option disabled>აირჩიეთ მისამართი</option>
+                    <option th:each="type : ${addressTypes}"
+                            th:value="${type.addressTypeId}"
+                            th:text="${type.addressTypeName}"
+                            th:selected="${type.addressTypeId == addr.addressType.addressTypeId}">
+                    </option>
+                  </select>
+                </div>
+
+
+                <div id="address-container" style="margin-top: 12px;"></div>
+
+              <div id="preference-container" class="preference-container"></div>
+
+              <div>
+                <input type="button" onclick="addSubcategoryInput()" value="+ მისამართის დამატება" />
+              </div>
+
+              <div class="last-name-input button-save" style="margin-top: 20px">
+                <input type="submit" value="განახლება" />
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+
+ let subcategoryIndex = 1;
+
+  function addSubcategoryInput() {
+    const container = document.getElementById("address-container");
+
+    const div = document.createElement("div");
+    div.classList.add("address-entry");
+
+    const templateSelect = document.querySelector(".address-select");
+    const optionsHTML = templateSelect.innerHTML;
+
+    div.innerHTML = `
+      <select name="addressDTOList[${subcategoryIndex}].addressType.addressTypeId"
+              class="address-select"
+              form="user-form"
+              style="margin-top:10px;"
+              data-index="${subcategoryIndex}">
+        ${optionsHTML}
+      </select>
+    `;
+
+    container.appendChild(div);
+
+    const newSelect = div.querySelector("select");
+    newSelect.addEventListener("change", function () {
+      createPreferenceForSelect(this);
+    });
+
+    subcategoryIndex++;
+  }
+
+
+  function createPreferenceForSelect(selectElem, optedInValue = null) {
+  const index = parseInt(selectElem.getAttribute("data-index"), 10);
+  const preferenceContainer = document.getElementById("preference-container");
+
+  const selectedOption = selectElem.options[selectElem.selectedIndex];
+  const addressTypeId = selectedOption.value;
+  const addressTypeName = selectedOption.text;
+
+  if (!addressTypeId) return;
+
+  const existing = document.getElementById(`preference-${index}`);
+  if (existing) existing.remove();
+
+  const prefDiv = document.createElement("div");
+  prefDiv.id = `preference-${index}`;
+  prefDiv.classList.add("preference-block");
+  prefDiv.style.marginBottom = "10px";
+
+  const isCheckedTrue = optedInValue === true ? "checked" : "";
+  const isCheckedFalse = optedInValue === false ? "checked" : "";
+
+  prefDiv.innerHTML = `
+    <label><strong>${addressTypeName}</strong> Preference</label>
+    <input type="hidden" name="preferenceDTOList[${index}].preferenceType.preferenceTypeId" value="${addressTypeId}" />
+    <div class="opt-in-out" style="margin-top: 6px;">
+      <input type="radio" id="in${index}" style="width:5%; height:10px" name="preferenceDTOList[${index}].optedIn" value="true" ${isCheckedTrue} />
+      <label for="in${index}">Opt-in</label>
+      <input type="radio" id="out${index}" style="width:5%; height:10px; margin-left: 15px;" name="preferenceDTOList[${index}].optedIn" value="false" ${isCheckedFalse} />
+      <label for="out${index}">Opt-out</label>
+    </div>
+  `;
+
+  preferenceContainer.appendChild(prefDiv);
+}
+
+ document.addEventListener("DOMContentLoaded", function () {
+  const allSelects = document.querySelectorAll(".address-select");
+
+  allSelects.forEach((selectElem, index) => {
+    selectElem.setAttribute("data-index", index);
+    selectElem.addEventListener("change", function () {
+      createPreferenceForSelect(this);
+    });
+  });
+
+  const form = document.getElementById("user-form");
+  if (form) {
+    form.addEventListener("submit", function () {
+      const blocks = document.querySelectorAll(".preference-block");
+
+      blocks.forEach(block => {
+        const radios = block.querySelectorAll("input[type='radio']");
+        const isChecked = Array.from(radios).some(r => r.checked);
+        if (!isChecked) {
+          block.remove();
+        }
+      });
+    });
+  }
+});
+
+  let newAddressIndex = 0;
+
+function addNewAddressInput() {
+  const container = document.getElementById("new-address-container");
+
+  const templateSelect = document.querySelector(".address-select");
+  const optionsHTML = templateSelect ? templateSelect.innerHTML : "";
+
+  const div = document.createElement("div");
+  div.classList.add("address-entry");
+
+  div.innerHTML = `
+    <select name="address[${newAddressIndex}].addressType.addressTypeId"
+            class="address-select"
+            form="user-form"
+            style="margin-top:10px;"
+            data-index="${newAddressIndex}">
+      ${optionsHTML}
+    </select>
+  `;
+
+  container.appendChild(div);
+
+  const newSelect = div.querySelector("select");
+  newSelect.addEventListener("change", function () {
+    createPreferenceForNewAddress(this);
+  });
+
+  newAddressIndex++;
+}
+
+</script>
+
+</body>
+</html>

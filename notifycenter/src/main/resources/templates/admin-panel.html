@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+  />
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css"
+  />
+  <style>
+    @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500");
+
+    body {
+      overflow-x: hidden;
+      font-family: "Roboto", sans-serif;
+    }
+
+    #viewport {
+      padding-left: 250px;
+      -webkit-transition: all 0.5s ease;
+      -moz-transition: all 0.5s ease;
+      -o-transition: all 0.5s ease;
+      transition: all 0.5s ease;
+    }
+
+    #content {
+      width: 100%;
+      position: relative;
+      margin-right: 0;
+    }
+
+    #sidebar {
+      z-index: 1000;
+      position: fixed;
+      left: 250px;
+      width: 250px;
+      height: 100%;
+      margin-left: -250px;
+      overflow-y: auto;
+      background: #37474f;
+      -webkit-transition: all 0.5s ease;
+      -moz-transition: all 0.5s ease;
+      -o-transition: all 0.5s ease;
+      transition: all 0.5s ease;
+    }
+
+    #sidebar header {
+      background-color: #263238;
+      font-size: 20px;
+      line-height: 52px;
+      text-align: center;
+    }
+
+    #sidebar header a {
+      color: #fff;
+      display: block;
+      text-decoration: none;
+    }
+
+    #sidebar header a:hover {
+      color: #fff;
+    }
+
+    #sidebar .nav a {
+      background: none;
+      border-bottom: 1px solid #455a64;
+      color: #cfd8dc;
+      font-size: 14px;
+      padding: 16px 24px;
+    }
+
+    #sidebar .nav a:hover {
+      background: none;
+      color: #eceff1;
+    }
+
+    #sidebar .nav a i {
+      margin-right: 16px;
+    }
+
+    .navbar-user {
+      border: 1px solid white;
+      background-color: white;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+<div id="viewport">
+  <div id="sidebar">
+    <header>
+      <a href="#"
+      ><img
+              src="/uploads/notify-center-logo.png"
+              style="width: 90px"
+              height="auto"
+              alt=""
+      /></a>
+    </header>
+    <ul class="nav">
+      <li>
+        <a href="#"> <i class="zmdi zmdi-view-dashboard"></i> Dashboard </a>
+      </li>
+      <li>
+        <a href="/admin/customers"> <i class="zmdi zmdi-link"></i> მომხმარებლები </a>
+      </li>
+      <li>
+        <a href="/admin/addresses"> <i class="zmdi zmdi-widgets"></i> მისამართები </a>
+      </li>
+      <li>
+        <a href="/admin/preferences"> <i class="zmdi zmdi-calendar"></i> Preferences </a>
+      </li>
+      <li>
+        <a href="/admin/reporting"> <i class="zmdi zmdi-info-outline"></i> Reporting </a>      </li>
+      </li>
+
+    </ul>
+  </div>
+
+  <div id="content">
+    <nav class="navbar navbar-default" style="background-color: #f4f6f9">
+      <div class="container-fluid" style="background-color: #f4f6f9">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="navbar-user">
+            <a href="#" th:text="${user.username}"></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid" style="text-align:center; width:70%; padding-top:70px;">
+      <img src="/uploads/admin-icon-vector.jpg" width="20%; margin:0 auto">
+      <h1 th:text="${'გამარჯობა,' + ' ' + user.username}"></h1>
+      <p >
+        კეთილი იყოს თქვენი მობრძანება მომხმარებლის საკონტაქტო ინფორმაციისა და შეტყობინებების
+        პარამეტრების ცენტრალიზებისა და მართვის პანელში, სადაც შეგიძლიათ დაამატოთ, შეცვალოთ, წაშალოთ მომხმარებლები, მისამართები,
+        Preferences. პანელი მიზნად ისახავს განავითაროს, შეცვალოს და იხელმძღვანელოს სხვადასხვა მიკროსერვისული გარემოდან წამოღებული ინფორმაციიდან.
+
+
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

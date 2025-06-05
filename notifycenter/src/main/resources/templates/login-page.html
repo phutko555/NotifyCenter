@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+<head>
+  <meta charset="UTF-8"/>
+  <title>ავტორიზაცია</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    body{
+        background-color:black;
+   }
+    /* .main {
+    background-position: center;
+    background-image: linear-gradient(
+        rgba(0, 0, 0, 0.8),
+        rgba(0, 0, 0, 0.8)
+      ),
+      url("https://i.ytimg.com/vi/DpG9WgLJxVw/maxresdefault.jpg");
+  } */
+    .navbar-item {
+      color: #50aa59;
+    }
+
+    .login-navbar-item {
+      border: 1px solid #27b654;
+      padding: 7px 14px;
+      border-radius: 26px;
+      transition: 0.3s;
+    }
+    .login-navbar-item:hover {
+      background-color: #1b3e3b;
+    }
+    .auth-login-form {
+      margin: 0 auto;
+      border: 1px solid #27b654;
+      height: 400px;
+      border-radius: 17px;
+    }
+    .auth-registration-form {
+      margin: 0 auto;
+      border: 1px solid #27b654;
+      height: 470px;
+      border-radius: 17px;
+    }
+    .login-form-header {
+      text-align: center;
+      margin: 0 auto;
+    }
+    .login-form-header h1 {
+      font-size: 28px;
+      margin-top: 22px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .login-actual-form {
+      width: 70%;
+      margin: 0 auto;
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    .form-item input {
+      width: 73%;
+      border: 1px solid rgba(202, 199, 199, 0.374);
+      border-radius: 25px;
+      height: 40px;
+      padding-left: 16px;
+      font-weight: 300;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.3s ease;
+      font-size: 12px;
+    }
+    /* .remember-forgot-password {
+      width: 70%;
+      text-align: ;
+    } */
+
+    .form-item input:focus {
+      border-color: #27b654 !important;
+      box-shadow: 0 0 0 2px rgba(39, 182, 84, 0.2);
+    }
+
+    .passwordErrorForm {
+      border: 1px solid red !important;
+    }
+
+    .input-photo-div-name {
+      position: absolute;
+      right: 18%;
+      bottom: 23%;
+    }
+
+    .input-photo-div-password {
+      position: absolute;
+      right: 18%;
+      bottom: 15%;
+    }
+
+    .form-input {
+      position: relative;
+    }
+    .remember-forgot-password {
+      display: flex;
+      justify-content: space-between;
+      width: 68%;
+      margin: 0 auto;
+      margin-top: 11px;
+    }
+
+    .submit-form-login input {
+      width: 73%;
+      border-radius: 25px;
+      height: 40px;
+      font-weight: bold;
+      box-sizing: border-box;
+      font-size: 12px;
+      background-color: white;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .submit-form-login input:hover {
+      box-shadow: 0 0 0 2px rgb(103, 91, 91);
+    }
+    .submit-form-login {
+      margin-top: 15px;
+    }
+
+    .login-to-register-link {
+      color: white;
+      margin-top: 15px;
+      font-size: 11px;
+    }
+    .passwordErrorMessage {
+      color: red;
+      font-size: 10px;
+      margin-top: 5px;
+    }
+    #successToast {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  display: none;
+}
+
+#successToast.show {
+  display: flex !important;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+  </style>
+</head>
+<body>
+<div class="bg-black main">
+  <header class="absolute inset-x-0 top-0 z-50" style="position: fixed">
+    <nav
+            class="flex items-center justify-between p-4 lg:px-8"
+            aria-label="Global"
+    >
+
+      <div
+              class="hidden lg:flex items-center pb-2"
+              style="border-bottom: 2px solid #50aa59"
+      >
+        <img src="/uploads/download.svg" class="h-5 w-auto mr-2"/>
+        <a
+                href="/"
+                class="text-sm/6 font-semibold navbar-item main-header-button"
+                style="color: white"
+        >
+          მთავარი
+        </a>
+      </div>
+
+      <div class="flex justify-center flex-1">
+        <a href="/" class="-m-1.5 p-1.5">
+          <img
+                  class="h-[6.25rem] w-auto"
+                  src="/uploads/notify-center-logo.png"
+                  alt=""
+          />
+        </a>
+      </div>
+
+      <div class="hidden lg:flex items-center">
+        <a
+                href="/login"
+                class="text-sm/6 font-semibold login-navbar-item inline-flex items-center gap-1"
+                style="color: white"
+        >
+          შესვლა
+          <img
+                  src="/uploads/log-in.svg"
+                  alt=""
+                  class="h-4 w-4"
+                  style="color: white"
+          />
+        </a>
+      </div>
+    </nav>
+
+    <div
+            id="successToast"
+            class="toast flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800"
+            role="alert"
+            style="display: none; z-index: 9999; position: fixed; top: 20px; right: 20px;"
+    >
+      <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+             viewBox="0 0 20 20">
+          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+        </svg>
+        <span class="sr-only">Check icon</span>
+      </div>
+      <div class="ms-3 text-sm font-normal toast-message">
+        <span th:text="${accCreated}">Account created successfully!</span>
+      </div>
+      <button type="button"
+              class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+              data-dismiss-target="#successToast" aria-label="Close">
+        <span class="sr-only">Close</span>
+        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+        </svg>
+      </button>
+    </div>
+
+  </header>
+
+  <div class="relative isolate px-6 pt-6 lg:px-8">
+    <div
+            class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+            aria-hidden="true"
+    >
+      <div
+              class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"
+              style="
+              clip-path: polygon(
+                74.1% 44.1%,
+                100% 61.6%,
+                97.5% 26.9%,
+                85.5% 0.1%,
+                80.7% 2%,
+                72.5% 32.5%,
+                60.2% 62.4%,
+                52.4% 68.1%,
+                47.5% 58.3%,
+                45.2% 34.5%,
+                27.5% 76.7%,
+                0.1% 64.9%,
+                17.9% 100%,
+                27.6% 76.8%,
+                76.1% 97.7%,
+                74.1% 44.1%
+              );
+            "
+      ></div>
+    </div>
+    <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-40">
+      <div class="auth-login-form" id="login-form">
+        <div class="login-form-header">
+          <h1>ავტორიზაცია</h1>
+        </div>
+        <div class="login-actual-form">
+          <form method="post" action="/login">
+            <div class="form-input form-item">
+              <input
+                      type="text"
+                      style="color: white"
+                      placeholder="სახელი"
+                      name="username"
+                      required
+              />
+              <div class="input-photo-div-name">
+                <img src="/uploads/user-round.svg" class="input-photo"/>
+              </div>
+            </div>
+
+            <div class="form-input form-item">
+              <input
+                      type="password"
+                      style="color: white; margin-top: 23px"
+                      placeholder="პაროლი"
+                      name="password"
+                      required
+              />
+              <div class="input-photo-div-password">
+                <img src="/uploads/lock-keyhole.svg" class="input-photo"/>
+              </div>
+            </div>
+            <div class="remember-forgot-password">
+              <div class="remember-checkbox">
+                <input type="checkbox" id="remember-checkbox"/>
+                <label
+                        for="remember-checkbox"
+                        style="color: white; font-size: 10px"
+                >დამახსოვრება</label
+                >
+              </div>
+              <div class="password-recover-link">
+                <a href="#" style="color: white; font-size: 10px"
+                >დაგავიწყდა პაროლი?</a
+                >
+              </div>
+            </div>
+            <div class="submit-form-login">
+              <input type="submit" value="შესვლა"/>
+            </div>
+            <div class="login-to-register-link">
+              არ გაქვს ანგარიში?
+              <a href="#"
+              ><span
+                      style="font-weight: bold"
+                      onclick="registrationFormAppear()"
+              >დარეგისტრირდი</span
+              ></a
+              >
+            </div>
+          </form>
+        </div>
+      </div>
+      <div
+              class="auth-registration-form"
+              style="display: none"
+              id="registration-form"
+      >
+        <div class="login-form-header">
+          <h1>რეგისტრაცია</h1>
+        </div>
+        <div class="login-actual-form">
+          <form method="post" action="/registration">
+            <div class="form-input form-item">
+              <input
+                      type="text"
+                      name="username"
+                      style="color: white"
+                      placeholder="მომხმარებელი"
+                      required
+              />
+              <div th:if="${registerError != null}">
+
+                <span th:text="${registerError}" class="passwordErrorMessage"></span>
+
+              </div>
+              <div class="input-photo-div-name"></div>
+            </div>
+
+            <div class="form-input form-item">
+              <input name="mail"
+                     type="email"
+                     style="color: white; margin-top: 23px"
+                     placeholder="ელ. ფოსტა"
+                     required
+              />
+              <div class="input-photo-div-password"></div>
+            </div>
+
+            <div class="form-input form-item">
+              <input
+                      type="password" name="password"
+                      style="color: white; margin-top: 23px"
+                      placeholder="პაროლი"
+                      required
+                      id="registration-password"
+                      oninput="passwordValidation()"
+              />
+              <div
+                      id="passwordValidationMessage"
+                      style="display: none"
+              ></div>
+              <div class="input-photo-div-password"></div>
+            </div>
+            <div class="remember-forgot-password">
+              <div class="remember-checkbox">
+                <input type="checkbox" id="remember-checkbox"/>
+                <label
+                        for="remember-checkbox"
+                        style="color: white; font-size: 10px"
+                >დამახსოვრება</label
+                >
+              </div>
+              <div class="password-recover-link">
+                <a href="#" style="color: white; font-size: 10px"
+                >დაგავიწყდა პაროლი?</a
+                >
+              </div>
+            </div>
+            <div class="submit-form-login">
+              <input type="submit" value="რეგისტრაცია"/>
+            </div>
+            <div class="login-to-register-link">
+              უკვე გაქვს ანგარიში?
+              <a href="#"
+              ><span style="font-weight: bold" onclick="loginFormAppear()">ავტორიზაცია</span></a
+              >
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    <div
+            class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(73%-30rem)]"
+            aria-hidden="true"
+    >
+      <div
+              class="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-288.75"
+              style="
+              clip-path: polygon(
+                74.1% 44.1%,
+                100% 61.6%,
+                97.5% 26.9%,
+                85.5% 0.1%,
+                80.7% 2%,
+                72.5% 32.5%,
+                60.2% 62.4%,
+                52.4% 68.1%,
+                47.5% 58.3%,
+                45.2% 34.5%,
+                27.5% 76.7%,
+                0.1% 64.9%,
+                17.9% 100%,
+                27.6% 76.8%,
+                76.1% 97.7%,
+                74.1% 44.1%
+              );
+            "
+      ></div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  function registrationFormAppear() {
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("registration-form").style.display = "block";
+  }
+
+function loginFormAppear() {
+        document.getElementById("registration-form").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+      }
+
+  function passwordValidation() {
+    const actualPassword = document.getElementById("registration-password");
+    const feedBack = document.getElementById("passwordValidationMessage");
+
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (actualPassword.value.length === 0) {
+      feedBack.style.display = "none";
+      feedBack.textContent = "";
+      actualPassword.classList.remove("passwordErrorForm");
+      return;
+    }
+
+    if (!passwordPattern.test(actualPassword.value)) {
+      feedBack.style.display = "block";
+      feedBack.textContent =
+        "გთხოვთ გამოიყენოთ მინ. 8 სიმბოლო : ციფრი ან რიცხვი, დიდი და პატარა ასოები.";
+
+      feedBack.className = "passwordErrorMessage";
+      actualPassword.classList.add("passwordErrorForm");
+    } else {
+      feedBack.style.display = "none";
+
+      feedBack.textContent = "";
+      actualPassword.classList.remove("passwordErrorForm");
+    }
+  }
+
+   /*<![CDATA[*/
+document.addEventListener('DOMContentLoaded', function () {
+  const successMessage = /*[[${accCreated != null}]]*/ false;
+
+  if (successMessage) {
+    const toastEl = document.getElementById('successToast');
+    const toastText = toastEl.querySelector('.toast-message span');
+
+    toastText.textContent = /*[[${accCreated}]]*/;
+
+    toastEl.style.display = 'flex';
+    setTimeout(() => {
+
+      toastEl.classList.add('show');
+    }, 10);
+
+
+    setTimeout(() => {
+      toastEl.classList.remove('show');
+      setTimeout(() => {
+
+        toastEl.style.display = 'none';
+      }, 400);
+    }, 4000);
+
+    toastEl.querySelector('[data-dismiss-target]').addEventListener('click', () => {
+      toastEl.classList.remove('show');
+      setTimeout(() => {
+
+        toastEl.style.display = 'none';
+      }, 400);
+    });
+  }
+});
+/*]]>*/
+
+      /*<![CDATA[*/
+       document.addEventListener("DOMContentLoaded", function () {
+        const registerTab = /*[[${registerTab}]]*/ false;
+
+        if (registerTab) {
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("registration-form").style.display = "block";
+        }
+    });
+      /*]]>*/
+</script>
+</body>
+</html>
