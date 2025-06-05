@@ -64,7 +64,7 @@ This project is a Spring Boot microservice designed to centralize and manage cus
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/notification-facade.git
+git clone https://github.com/phutko555/NotifyCenter.git
 cd notification-facade
 
 
