@@ -65,7 +65,7 @@ This project is a Spring Boot microservice designed to centralize and manage cus
 
 ```bash
 git clone https://github.com/phutko555/NotifyCenter.git
-cd notification-facade
+cd NotifyCenter
 
 
 > ℹ️ By default, the application runs on **port 8666**. 
