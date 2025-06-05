@@ -31,11 +31,7 @@ public class PreferenceService {
     }
 
     public List<Preference> preferenceList(){
-        List<Preference> preferences =  preferenceRepository.findAll();
-        if(preferences.isEmpty()){
-            throw new NoSuchElementException("სამწუხაროდ ჯერ Preferences არ არის დამატებული");
-        }
-        return preferences;
+     return  preferenceRepository.findAll();
     }
 
 

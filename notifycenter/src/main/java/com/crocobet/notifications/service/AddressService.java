@@ -37,10 +37,6 @@ public class AddressService {
     }
 
     public List<Address> addresses(){
-      List<Address> addresses = addressRepository.findAll();
-      if(addresses.isEmpty()){
-          throw new NoSuchElementException("სამწუხაროდ ჯერ მისამართები არ არის დამატებული");
-      }
-      return addresses;
+      return addressRepository.findAll();
     }
 }
