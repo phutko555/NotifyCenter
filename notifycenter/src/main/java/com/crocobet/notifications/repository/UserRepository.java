@@ -28,4 +28,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
             "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
             "u.role = 'CUSTOMER'")
     List<User> findFilteredCustomers(@Param("keyword") String keyword);
+
+
 }

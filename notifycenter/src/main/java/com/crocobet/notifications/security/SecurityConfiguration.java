@@ -54,6 +54,7 @@ public class SecurityConfiguration {
         ) .httpBasic(Customizer.withDefaults())
                 .formLogin(login ->
                 login.loginPage("/login").permitAll()
+                        .failureUrl("/login?error=true")
                         .defaultSuccessUrl("/admin/dashboard", true)
         );
 

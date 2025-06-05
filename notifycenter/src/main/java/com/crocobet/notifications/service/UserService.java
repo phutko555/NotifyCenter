@@ -77,7 +77,8 @@ public class UserService {
         List<Preference> preferences = new ArrayList<>();
         for(PreferenceDTO dto : request.getPreferenceDTOList()){
             Preference preference = new Preference();
-            preference.setOptedIn(dto.getOptedIn());
+            Boolean optedIn = dto.getOptedIn();
+            preference.setOptedIn(optedIn != null ? optedIn : false);
 
             preference.setUser(user);
             preference.setPreferenceType(dto.getPreferenceType());

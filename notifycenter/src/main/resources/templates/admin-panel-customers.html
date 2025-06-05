@@ -769,9 +769,9 @@
                       id="address-container"
                       style="flex: 1"
               >
-                <select name="addressDTOList[0].addressType.addressTypeId"  class="address-select" form="user-form" id="address-options-template">
+                <select name="addressDTOList[0].addressType.addressTypeId" required  class="address-select" form="user-form" id="address-options-template">
 
-                  <option disabled selected value=""> აირჩიეთ მისამართი </option>
+                  <option disabled  selected value="" > აირჩიეთ მისამართი </option>
 
                   <option th:each="addressType : ${addressTypes}"
                           th:value="${addressType.addressTypeId}"
@@ -876,7 +876,7 @@
       <label><strong>${addressTypeName}</strong> Preference</label>
       <input type="hidden" name="preferenceDTOList[${index}].preferenceType.preferenceTypeId" value="${addressTypeId}" />
       <div class="opt-in-out" style="margin-top: 6px;">
-        <input type="radio" id="in${index}" style="width:5%; height:10px" name="preferenceDTOList[${index}].optedIn" value="true" />
+        <input type="radio" id="in${index}" style="width:5%; height:10px" required name="preferenceDTOList[${index}].optedIn" value="true" />
         <label for="in${index}">Opt-in</label>
         <input type="radio" id="out${index}" style="width:5%; height:10px; margin-left: 15px;" name="preferenceDTOList[${index}].optedIn" value="false" />
         <label for="out${index}">Opt-out</label>

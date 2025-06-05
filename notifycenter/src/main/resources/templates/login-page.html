@@ -218,6 +218,7 @@
       </div>
       <div class="ms-3 text-sm font-normal toast-message">
         <span th:text="${accCreated}">Account created successfully!</span>
+
       </div>
       <button type="button"
               class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
@@ -282,6 +283,7 @@
             </div>
 
             <div class="form-input form-item">
+
               <input
                       type="password"
                       style="color: white; margin-top: 23px"
@@ -307,7 +309,10 @@
                 >დაგავიწყდა პაროლი?</a
                 >
               </div>
+
             </div>
+            <div th:if="${param.error != null}" class="" style="color:red; font-size:13px;margin-top:10px;">სამწუხაროდ, მომხმარებლის სახელი ან პაროლი არასწორია</div>
+
             <div class="submit-form-login">
               <input type="submit" value="შესვლა"/>
             </div>
@@ -446,33 +451,49 @@ function loginFormAppear() {
         document.getElementById("login-form").style.display = "block";
       }
 
-  function passwordValidation() {
-    const actualPassword = document.getElementById("registration-password");
-    const feedBack = document.getElementById("passwordValidationMessage");
+ function passwordValidation() {
+  const actualPassword = document.getElementById("registration-password");
+  const feedBack = document.getElementById("passwordValidationMessage");
 
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
-    if (actualPassword.value.length === 0) {
-      feedBack.style.display = "none";
-      feedBack.textContent = "";
-      actualPassword.classList.remove("passwordErrorForm");
-      return;
-    }
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
-    if (!passwordPattern.test(actualPassword.value)) {
-      feedBack.style.display = "block";
-      feedBack.textContent =
-        "გთხოვთ გამოიყენოთ მინ. 8 სიმბოლო : ციფრი ან რიცხვი, დიდი და პატარა ასოები.";
+  if (actualPassword.value.length === 0) {
+    feedBack.style.display = "none";
 
-      feedBack.className = "passwordErrorMessage";
-      actualPassword.classList.add("passwordErrorForm");
-    } else {
-      feedBack.style.display = "none";
-
-      feedBack.textContent = "";
-      actualPassword.classList.remove("passwordErrorForm");
-    }
+    feedBack.textContent = "";
+    actualPassword.classList.remove("passwordErrorForm");
+    return true;
   }
+
+  if (!passwordPattern.test(actualPassword.value)) {
+    feedBack.style.display = "block";
+
+    feedBack.textContent =
+      "გთხოვთ გამოიყენოთ მინ. 8 სიმბოლო : ციფრი ან რიცხვი, დიდი და პატარა ასოები.";
+
+    feedBack.className = "passwordErrorMessage";
+    actualPassword.classList.add("passwordErrorForm");
+    return false;
+
+
+  } else {
+    feedBack.style.display = "none";
+    feedBack.textContent = "";
+
+    actualPassword.classList.remove("passwordErrorForm");
+    return true;
+  }
+
+
+}
+
+document.getElementById("registration-form").addEventListener("submit", function (event) {
+  const isValid = passwordValidation();
+  if (!isValid) {
+    event.preventDefault();
+  }
+});
 
    /*<![CDATA[*/
 document.addEventListener('DOMContentLoaded', function () {

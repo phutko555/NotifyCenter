@@ -53,29 +53,29 @@ public class DataInitializer {
     }
     @PostConstruct
     public void initAddresses() {
-        List<AddressType> addressTypes = new ArrayList<>();
-        List<PreferenceType> preferenceTypes = new ArrayList<>();
+        if (addressTypeRepository.count() == 0 && preferenceTypeRepository.count() == 0) {
+            List<AddressType> addressTypes = new ArrayList<>();
+            AddressType addressType = new AddressType();
+            addressType.setAddressTypeName("SMS");
+            addressTypes.add(addressType);
 
-        AddressType addressType = new AddressType();
-        addressType.setAddressTypeName("SMS");
-        addressTypes.add(addressType);
+            AddressType addressType1 = new AddressType();
+            addressType1.setAddressTypeName("email");
+            addressTypes.add(addressType1);
 
-        AddressType addressType1 = new AddressType();
-        addressType1.setAddressTypeName("email");
-        addressTypes.add(addressType1);
+            List<PreferenceType> preferenceTypes = new ArrayList<>();
+            PreferenceType preferenceType = new PreferenceType();
+            preferenceType.setPreferenceTypeName(addressType.getAddressTypeName());
+            preferenceTypes.add(preferenceType);
 
-        PreferenceType preferenceType = new PreferenceType();
-        preferenceType.setPreferenceTypeName(addressType.getAddressTypeName());
-        preferenceTypes.add(preferenceType);
+            PreferenceType preferenceType1 = new PreferenceType();
+            preferenceType1.setPreferenceTypeName(addressType1.getAddressTypeName());
+            preferenceTypes.add(preferenceType1);
 
-        PreferenceType preferenceType1 = new PreferenceType();
-        preferenceType1.setPreferenceTypeName(addressType1.getAddressTypeName());
-        preferenceTypes.add(preferenceType1);
-
-        addressTypeRepository.saveAll(addressTypes);
-        preferenceTypeRepository.saveAll(preferenceTypes);
+            addressTypeRepository.saveAll(addressTypes);
+            preferenceTypeRepository.saveAll(preferenceTypes);
+        }
     }
 
-
-}
+    }
 
