@@ -3,6 +3,10 @@ package com.crocobet.notifications.controller.User;
 import com.crocobet.notifications.dto.customerDTO.CustomerAddRequest;
 
 import com.crocobet.notifications.model.User;
+import com.crocobet.notifications.model.address.AddressType;
+import com.crocobet.notifications.model.preference.PreferenceType;
+import com.crocobet.notifications.service.AddressTypeService;
+import com.crocobet.notifications.service.PreferenceTypeService;
 import com.crocobet.notifications.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +23,16 @@ import java.util.List;
 @RequestMapping("/customer")
 public class CustomerController {
 
+    private AddressTypeService addressTypeService;
+
+    private PreferenceTypeService preferenceTypeService;
 
     private UserService userService;
+
     @Autowired
-    public CustomerController(UserService userService) {
+    public CustomerController(AddressTypeService addressTypeService, PreferenceTypeService preferenceTypeService, UserService userService) {
+        this.addressTypeService = addressTypeService;
+        this.preferenceTypeService = preferenceTypeService;
         this.userService = userService;
     }
 
@@ -45,10 +55,20 @@ public class CustomerController {
     }
 
     @GetMapping("/filtered-customers")
-    public String getFilteredCustomers(@RequestParam String keyword, Model model, Principal principal){
+    public String getFilteredCustomers(@RequestParam(required = false) String keyword,
+
+                                       @RequestParam(required = false) String preferenceType,
+
+                                       Model model, Principal principal){
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("user",user);
-        List<User> filteredCustomers = userService.getFilteredCustomers(keyword);
+        List<User> filteredCustomers = userService.getFilteredCustomers(keyword,preferenceType);
+
+        List<PreferenceType> preferenceTypes = preferenceTypeService.getPreferenceTypes();
+        List<AddressType> addressTypes = addressTypeService.getAddressTypes();
+
+        model.addAttribute("preferenceTypes",preferenceTypes);
+        model.addAttribute("addressTypes",addressTypes);
 
         model.addAttribute("customers",filteredCustomers);
         model.addAttribute("keyword",keyword);

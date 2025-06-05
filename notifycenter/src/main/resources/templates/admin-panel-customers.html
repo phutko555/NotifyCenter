@@ -594,7 +594,42 @@
   font-size: 14px;
   color: #444;
 }
+  .navbar-user {
+      border: 1px solid white;
+      background-color: white;
+      border-radius: 20px;
+    }
 
+    .logout-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #1f1f1f;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 5px;
+  z-index: 1000;
+  min-width: 120px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logout-button {
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #c0392b;
+}
   </style>
 </head>
 <body>
@@ -632,8 +667,13 @@
     <nav class="navbar navbar-default" style="background-color: #f4f6f9">
       <div class="container-fluid" style="background-color: #f4f6f9">
         <ul class="nav navbar-nav navbar-right">
-          <li class="navbar-user">
-            <a href="#" th:text="${user.username}">გიორგი ფუტკარაძე</a>
+          <li class="navbar-user" style="position: relative;">
+            <a href="#"  th:text="${user.username}" onclick="logoutMenuToggle()"></a>
+            <div id="log-out-container" class="logout-dropdown">
+              <form th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-button">გამოსვლა</button>
+              </form>
+            </div>
           </li>
         </ul>
       </div>
@@ -646,6 +686,65 @@
             <div class="search-actual-bar">
               <input type="search" name="keyword" th:value="${keyword}" placeholder="მოძებნე მომხმარებელი..." />
             </div>
+            <div class="search-button">
+              <input type="submit" value="ძებნა" />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="search-bar-container">
+        <form method="get" action="/customer/filtered-customers">
+          <input type="hidden" name="keyword" th:value="${keyword}">
+          <h3 style="text-align:center">გაფილტვრა</h3>
+          <div class="search-bar-container-1">
+            <div class="search-actual-bar">
+              <div class="items-to-flex" style="margin-top: 12px">
+                <div
+                        class="first-name-input user-info"
+                        id="address-container"
+                        style="flex: 1"
+                >
+                  <select name="addressType" required  class="address-select" form="user-form" >
+
+                    <option disabled  selected value="" > აირჩიეთ მისამართი </option>
+
+                    <option th:each="addressType : ${addressTypes}"
+                            th:value="${addressType.addressTypeId}"
+                            th:text="${addressType.addressTypeName}">
+                    </option>
+                  </select>
+                </div>
+
+
+                <div class="last-name-input user-info" style="flex: 1;" id="">
+                </div>
+              </div>
+
+            </div>
+<!--            <div class="items-to-flex" style="margin-top: 12px">-->
+<!--              <div-->
+<!--                      class="first-name-input user-info"-->
+<!--                      id="address-container"-->
+<!--                      style="flex: 1"-->
+<!--              >-->
+<!--                <select name="preferenceType" required  class="address-select" form="user-form" >-->
+
+<!--                  <option disabled  selected value="" > აირჩიეთ Preference </option>-->
+
+<!--                  <option th:each="preferenceType : ${preferenceTypes}"-->
+<!--                          th:value="${preferenceType.preferenceTypeId}"-->
+<!--                          th:text="${preferenceType.preferenceTypeName}">-->
+<!--                  </option>-->
+<!--                </select>-->
+<!--              </div>-->
+
+
+<!--              <div class="last-name-input user-info" style="flex: 1;" id="">-->
+<!--              </div>-->
+<!--            </div>-->
             <div class="search-button">
               <input type="submit" value="ძებნა" />
             </div>
@@ -943,7 +1042,21 @@ function addNewAddressInput() {
 
   newAddressIndex++;
 }
+ function logoutMenuToggle() {
+      const dropdown = document.getElementById("log-out-container");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
 
+
+    document.addEventListener("click", function (event) {
+      const container = document.getElementById("log-out-container");
+
+      const userLink = document.querySelector(".navbar-user a");
+
+      if (!container.contains(event.target) && !userLink.contains(event.target)) {
+        container.style.display = "none";
+      }
+    });
 </script>
 
 </body>

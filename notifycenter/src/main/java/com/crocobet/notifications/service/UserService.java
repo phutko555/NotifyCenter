@@ -180,8 +180,8 @@ public class UserService {
         return userRepository.findAllCustomers();
     }
 
-    public List<User> getFilteredCustomers(String keyword){
-        return userRepository.findFilteredCustomers(keyword);
+    public List<User> getFilteredCustomers(String keyword, String preferenceType){
+        return userRepository.findFilteredCustomers(keyword,preferenceType);
     }
 
     public User findByUsername(String username){
