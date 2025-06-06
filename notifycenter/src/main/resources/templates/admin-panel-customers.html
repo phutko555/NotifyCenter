@@ -701,50 +701,37 @@
           <h3 style="text-align:center">გაფილტვრა</h3>
           <div class="search-bar-container-1">
             <div class="search-actual-bar">
-              <div class="items-to-flex" style="margin-top: 12px">
-                <div
-                        class="first-name-input user-info"
-                        id="address-container"
-                        style="flex: 1"
-                >
-                  <select name="addressType" required  class="address-select" form="user-form" >
+                          <div class="items-to-flex" style="margin-top: 12px">
+                            <div
+                                    class="first-name-input user-info"
+                                    id="address-container-1"
+                                    style="flex: 1"
+                            >
+                              <select name="preferenceType" class="address-select-1">
+                                <option disabled selected th:if="${preferType == null}">აირჩიეთ Preference</option>
 
-                    <option disabled  selected value="" > აირჩიეთ მისამართი </option>
-
-                    <option th:each="addressType : ${addressTypes}"
-                            th:value="${addressType.addressTypeId}"
-                            th:text="${addressType.addressTypeName}">
-                    </option>
-                  </select>
-                </div>
-
-
-                <div class="last-name-input user-info" style="flex: 1;" id="">
-                </div>
-              </div>
+                                <option th:each="preferenceType : ${preferenceTypes}"
+                                        th:value="${preferenceType.preferenceTypeId}"
+                                        th:text="${preferenceType.preferenceTypeName}"
+                                        th:selected="${preferType != null and preferenceType.preferenceTypeId == preferType}">
+                                </option>
+                              </select>
+                            </div>
+                            <div class="last-name-input user-info" style="flex: 1;" id="">
+                            </div>
+                          </div>
 
             </div>
-<!--            <div class="items-to-flex" style="margin-top: 12px">-->
-<!--              <div-->
-<!--                      class="first-name-input user-info"-->
-<!--                      id="address-container"-->
-<!--                      style="flex: 1"-->
-<!--              >-->
-<!--                <select name="preferenceType" required  class="address-select" form="user-form" >-->
+            <select name="sortBy" class="form-control" style="flex: 1;">
+              <option disabled selected th:if="${sortBy == null}">აირჩიეთ სორტირება</option>
+              <option value="firstNameAsc" th:selected="${sortBy == 'firstNameAsc'}">სახელი (A-Z)</option>
+              <option value="firstNameDesc" th:selected="${sortBy == 'firstNameDesc'}">სახელი (Z-A)</option>
 
-<!--                  <option disabled  selected value="" > აირჩიეთ Preference </option>-->
-
-<!--                  <option th:each="preferenceType : ${preferenceTypes}"-->
-<!--                          th:value="${preferenceType.preferenceTypeId}"-->
-<!--                          th:text="${preferenceType.preferenceTypeName}">-->
-<!--                  </option>-->
-<!--                </select>-->
-<!--              </div>-->
+              <option value="createdAtDesc" th:selected="${sortBy == 'createdAtDesc'}">ახალი მომხმარებლები</option>
+              <option value="createdAtAsc" th:selected="${sortBy == 'createdAtAsc'}">ძველი მომხმარებლები</option>
+            </select>
 
 
-<!--              <div class="last-name-input user-info" style="flex: 1;" id="">-->
-<!--              </div>-->
-<!--            </div>-->
             <div class="search-button">
               <input type="submit" value="ძებნა" />
             </div>
@@ -767,7 +754,7 @@
           </div>
         </div>
 
-        <div class="settings-container">
+        <div class="settings-container" style="padding-bottom:50px;">
           <table>
             <tr>
               <th>ID</th>

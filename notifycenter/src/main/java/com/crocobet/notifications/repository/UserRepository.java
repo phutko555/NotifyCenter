@@ -27,15 +27,16 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Transactional
     @Query("SELECT DISTINCT u FROM User u " +
-            "LEFT JOIN FETCH u.address a " +
             "LEFT JOIN FETCH u.preference p " +
-            "WHERE (:keyword IS NULL OR " +
-                    "LOWER(u.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-                    "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-                    "LOWER(u.number) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-                "AND (:preferenceType IS NULL OR LOWER(p.preferenceType.preferenceTypeName) = LOWER(:preferenceType)) " +
-                    "AND u.role = 'CUSTOMER'")
+            "WHERE (" +
+            ":keyword IS NULL OR " +
+            "LOWER(u.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%'))" +
+            ") " +
+            "AND (:preferenceType IS NULL OR p.preferenceType.preferenceTypeId = :preferenceType) " +
+            "AND u.role = 'CUSTOMER'")
     List<User> findFilteredCustomers(@Param("keyword") String keyword,
-                                     @Param("preferenceType") String preferenceType);
+                                     @Param("preferenceType") Long preferenceType);
+
 
 }

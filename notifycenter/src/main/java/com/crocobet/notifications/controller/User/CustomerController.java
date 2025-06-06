@@ -57,12 +57,13 @@ public class CustomerController {
     @GetMapping("/filtered-customers")
     public String getFilteredCustomers(@RequestParam(required = false) String keyword,
 
-                                       @RequestParam(required = false) String preferenceType,
+                                       @RequestParam(required = false) Long preferenceType,
+                                       @RequestParam(required = false) String sortBy,
 
                                        Model model, Principal principal){
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("user",user);
-        List<User> filteredCustomers = userService.getFilteredCustomers(keyword,preferenceType);
+        List<User> filteredCustomers = userService.getFilteredCustomers(keyword,preferenceType,sortBy);
 
         List<PreferenceType> preferenceTypes = preferenceTypeService.getPreferenceTypes();
         List<AddressType> addressTypes = addressTypeService.getAddressTypes();
@@ -70,8 +71,11 @@ public class CustomerController {
         model.addAttribute("preferenceTypes",preferenceTypes);
         model.addAttribute("addressTypes",addressTypes);
 
+
         model.addAttribute("customers",filteredCustomers);
         model.addAttribute("keyword",keyword);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("preferType",preferenceType);
 
         return "admin-panel-customers";
     }

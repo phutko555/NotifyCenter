@@ -22,6 +22,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -63,32 +64,64 @@ public class UserService {
         user.setLastName(request.getLastName());
         user.setLegalAddress(request.getLegalAddress());
         user.setMail(request.getMail());
+
         user.setNumber(request.getNumber());
+        user.setCreatedAt(LocalDateTime.now());
         user.setRole(Role.CUSTOMER);
 
+
+        Set<Long> seenAddressTypeIds = new HashSet<>();
         List<Address> addresses = new ArrayList<>();
-        for(AddressDTO dto : request.getAddressDTOList()){
+
+        for (AddressDTO dto : request.getAddressDTOList()) {
+            if (dto.getAddressType() == null || dto.getAddressType().getAddressTypeId() == null) {
+                continue;
+            }
+
+            Long typeId = dto.getAddressType().getAddressTypeId();
+            if (seenAddressTypeIds.contains(typeId)) {
+                continue;
+            }
+
+            seenAddressTypeIds.add(typeId);
+
             Address address = new Address();
             address.setAddressType(dto.getAddressType());
             address.setUser(user);
             addresses.add(address);
         }
 
+        Set<Long> seenPreferenceTypeIds = new HashSet<>();
         List<Preference> preferences = new ArrayList<>();
-        for(PreferenceDTO dto : request.getPreferenceDTOList()){
+
+        for (PreferenceDTO dto : request.getPreferenceDTOList()) {
+            if (dto.getPreferenceType() == null || dto.getPreferenceType().getPreferenceTypeId() == null) {
+                continue;
+            }
+
+            Long typeId = dto.getPreferenceType().getPreferenceTypeId();
+            if (seenPreferenceTypeIds.contains(typeId)) {
+                continue;
+            }
+
+            seenPreferenceTypeIds.add(typeId);
+
             Preference preference = new Preference();
             Boolean optedIn = dto.getOptedIn();
             preference.setOptedIn(optedIn != null ? optedIn : false);
-
             preference.setUser(user);
+
             preference.setPreferenceType(dto.getPreferenceType());
             preferences.add(preference);
         }
+
         user.setAddress(addresses);
         user.setPreference(preferences);
 
         userRepository.save(user);
     }
+
+
 
     public void removeCustomer(Long customerId){
         User user = userRepository.findById(customerId).orElseThrow();
@@ -180,9 +213,32 @@ public class UserService {
         return userRepository.findAllCustomers();
     }
 
-    public List<User> getFilteredCustomers(String keyword, String preferenceType){
-        return userRepository.findFilteredCustomers(keyword,preferenceType);
+    public List<User> getFilteredCustomers(String keyword, Long preferenceType, String sortBy) {
+        List<User> users = userRepository.findFilteredCustomers(keyword, preferenceType);
+
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "firstNameAsc":
+                    users.sort(Comparator.comparing(User::getFirstName));
+                    break;
+                case "firstNameDesc":
+                    users.sort(Comparator.comparing(User::getFirstName).reversed());
+                    break;
+                case "createdAtAsc":
+                    users.sort(Comparator.comparing(User::getCreatedAt));
+                    break;
+                case "createdAtDesc":
+                    users.sort(Comparator.comparing(User::getCreatedAt).reversed());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return users;
     }
+
+
 
     public User findByUsername(String username){
         return userRepository.findByUsername(username).orElseThrow();

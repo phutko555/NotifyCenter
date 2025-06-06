@@ -11,6 +11,8 @@ import jakarta.persistence.*;
 import org.aspectj.weaver.ast.Not;
 
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -34,6 +36,8 @@ public class User {
     private String number;
 
     private String legalAddress;
+
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -133,4 +137,11 @@ public class User {
         this.legalAddress = legalAddress;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
