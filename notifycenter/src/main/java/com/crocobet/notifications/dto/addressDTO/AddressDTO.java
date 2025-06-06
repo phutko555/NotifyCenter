@@ -4,6 +4,7 @@ import com.crocobet.notifications.model.address.AddressType;
 
 public class AddressDTO {
 
+    private Long addressId;
     private AddressType addressType;
 
     public AddressType getAddressType() {
@@ -14,4 +15,11 @@ public class AddressDTO {
         this.addressType = addressType;
     }
 
+    public Long getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
+    }
 }

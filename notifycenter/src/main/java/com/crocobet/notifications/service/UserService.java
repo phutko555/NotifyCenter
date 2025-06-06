@@ -151,39 +151,41 @@ public class UserService {
     }
 
     private void updateAddresses(User user, List<AddressDTO> addressDTOs) {
-
-
-        Map<Long, Address> existingAddresses = user.getAddress().stream()
-                .collect(Collectors.toMap(
-
-                        addr -> addr.getAddressType().getAddressTypeId(),
-                        addr -> addr
-                ));
+        Map<Long, Address> existingAddressesById = user.getAddress().stream()
+                .filter(a -> a.getAddressId() != null)
+                .collect(Collectors.toMap(Address::getAddressId, a -> a));
 
         List<Address> updatedAddresses = new ArrayList<>();
-
         for (AddressDTO dto : addressDTOs) {
-            Long typeId = dto.getAddressType().getAddressTypeId();
 
+            Address address;
 
+            if (dto.getAddressId() != null && existingAddressesById.containsKey(dto.getAddressId())) {
 
-            Address address = existingAddresses.getOrDefault(typeId, new Address());
+                address = existingAddressesById.get(dto.getAddressId());
+            } else {
+                address = new Address();
+            }
             address.setAddressType(dto.getAddressType());
             address.setUser(user);
-
-
             updatedAddresses.add(address);
         }
 
         user.setAddress(updatedAddresses);
     }
 
-    private void updatePreferences(User user, List<PreferenceDTO> preferenceDTOs) {
 
-        Map<Long, Preference> existingPreferences = user.getPreference().stream()
+    private void updatePreferences(User user, List<PreferenceDTO> preferenceDTOs) {
+        Map<Long, Preference> existingPreferencesById = user.getPreference().stream()
+                .filter(p -> p.getPreferenceId() != null)
+                .collect(Collectors.toMap(Preference::getPreferenceId, p -> p));
+
+        Map<Long, Preference> existingPreferencesByTypeId = user.getPreference().stream()
+                .filter(p -> p.getPreferenceType() != null)
                 .collect(Collectors.toMap(
-                        pref -> pref.getPreferenceType().getPreferenceTypeId(),
-                        pref -> pref
+                        p -> p.getPreferenceType().getPreferenceTypeId(),
+                        p -> p,
+                        (p1, p2) -> p1
                 ));
 
         List<Preference> updatedPreferences = new ArrayList<>();
@@ -191,18 +193,30 @@ public class UserService {
         for (PreferenceDTO dto : preferenceDTOs) {
             if (dto.getPreferenceType() == null) continue;
 
-            Long typeId = dto.getPreferenceType().getPreferenceTypeId();
+            Preference preference;
 
-            Preference preference = existingPreferences.getOrDefault(typeId, new Preference());
+            if (dto.getPreferenceId() != null && existingPreferencesById.containsKey(dto.getPreferenceId())) {
+                preference = existingPreferencesById.get(dto.getPreferenceId());
+            }
+
+            else if (existingPreferencesByTypeId.containsKey(dto.getPreferenceType().getPreferenceTypeId())) {
+                preference = existingPreferencesByTypeId.get(dto.getPreferenceType().getPreferenceTypeId());
+            }
+
+            else {
+                preference = new Preference();
+            }
+
             preference.setPreferenceType(dto.getPreferenceType());
             preference.setOptedIn(dto.getOptedIn());
             preference.setUser(user);
+
             updatedPreferences.add(preference);
         }
 
         user.setPreference(updatedPreferences);
-        userRepository.save(user);
     }
+
 
 
     public User getUserById(Long customerId){

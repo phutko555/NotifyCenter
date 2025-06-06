@@ -4,6 +4,8 @@ import com.crocobet.notifications.model.preference.PreferenceType;
 
 public class PreferenceDTO {
 
+    private Long preferenceId;
+
     private PreferenceType preferenceType;
 
     private Boolean optedIn;
@@ -22,5 +24,13 @@ public class PreferenceDTO {
 
     public void setOptedIn(Boolean optedIn) {
         this.optedIn = optedIn;
+    }
+
+    public Long getPreferenceId() {
+        return preferenceId;
+    }
+
+    public void setPreferenceId(Long preferenceId) {
+        this.preferenceId = preferenceId;
     }
 }

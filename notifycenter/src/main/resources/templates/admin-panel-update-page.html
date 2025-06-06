@@ -735,6 +735,8 @@
               <div id="existing-address-container">
 
                 <div th:each="addr, iterStat : ${customer.address}" class="address-block">
+                  <input type="hidden" th:name="'addressDTOList[' + ${iterStat.index} + '].addressId'" th:value="${addr.addressId}" />
+
                   <select th:name="'addressDTOList[' + ${iterStat.index} + '].addressType.addressTypeId'"
                           class="address-select existing"
                           th:attr="data-index=${iterStat.index}">
@@ -800,7 +802,7 @@
   }
 
 
-  function createPreferenceForSelect(selectElem, optedInValue = null) {
+function createPreferenceForSelect(selectElem, optedInValue = null, preferenceId = null) {
   const index = parseInt(selectElem.getAttribute("data-index"), 10);
   const preferenceContainer = document.getElementById("preference-container");
 
@@ -823,6 +825,10 @@
 
   prefDiv.innerHTML = `
     <label><strong>${addressTypeName}</strong> Preference</label>
+    ${preferenceId !== null && preferenceId !== undefined ?
+      `<input type="hidden" name="preferenceDTOList[${index}].preferenceId" value="${preferenceId}" />` :
+      ''
+    }
     <input type="hidden" name="preferenceDTOList[${index}].preferenceType.preferenceTypeId" value="${addressTypeId}" />
     <div class="opt-in-out" style="margin-top: 6px;">
       <input type="radio" id="in${index}" style="width:5%; height:10px" name="preferenceDTOList[${index}].optedIn" value="true" ${isCheckedTrue} />
@@ -834,6 +840,7 @@
 
   preferenceContainer.appendChild(prefDiv);
 }
+
 
  document.addEventListener("DOMContentLoaded", function () {
   const allSelects = document.querySelectorAll(".address-select");
