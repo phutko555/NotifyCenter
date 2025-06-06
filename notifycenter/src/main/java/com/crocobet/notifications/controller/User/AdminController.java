@@ -1,5 +1,6 @@
 package com.crocobet.notifications.controller.User;
 
+import com.crocobet.notifications.dto.addressDTO.AddressWithPreferenceDTO;
 import com.crocobet.notifications.model.User;
 
 import com.crocobet.notifications.model.address.Address;
@@ -25,7 +26,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -92,18 +96,38 @@ public class AdminController {
     }
 
     @GetMapping("/update/{customerId}")
-    public String updateCustomerPage(@PathVariable Long customerId, Model model,Principal principal){
+    public String updateCustomerPage(@PathVariable Long customerId, Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         User customer = userService.getUserById(customerId);
-        model.addAttribute("customer",customer);
 
-        List<PreferenceType> preferenceTypes = preferenceTypeService.getPreferenceTypes();
-        List<AddressType> addressTypes = addressTypeService.getAddressTypes();
-        model.addAttribute("preferenceTypes",preferenceTypes);
-        model.addAttribute("addressTypes",addressTypes);
+        List<Preference> preferences = customer.getPreference();
+        List<Address> addresses = customer.getAddress();
+
+        Map<Long, Preference> preferenceMap = preferences.stream()
+                .filter(p -> p.getPreferenceType() != null)
+                .collect(Collectors.toMap(p -> p.getPreferenceType().getPreferenceTypeId(), p -> p));
+
+
+        List<AddressWithPreferenceDTO> addressWithPrefs = new ArrayList<>();
+        for (Address address : addresses) {
+            Preference pref = null;
+            if (address.getAddressType() != null) {
+
+                pref = preferenceMap.get(address.getAddressType().getAddressTypeId());
+            }
+            addressWithPrefs.add(new AddressWithPreferenceDTO(address, pref));
+        }
+
+        model.addAttribute("customer", customer);
+        model.addAttribute("addressWithPrefs", addressWithPrefs);
+
+        model.addAttribute("preferenceTypes", preferenceTypeService.getPreferenceTypes());
+        model.addAttribute("addressTypes", addressTypeService.getAddressTypes());
+
         return "admin-panel-update-page";
     }
+
 
     @GetMapping("/reporting")
     public String getReportingPage(Model model,Principal principal){

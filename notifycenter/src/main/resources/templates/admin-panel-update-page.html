@@ -734,8 +734,8 @@
             <div class="items-to-flex">
               <div id="existing-address-container">
 
-                <div th:each="addr, iterStat : ${customer.address}" class="address-block">
-                  <input type="hidden" th:name="'addressDTOList[' + ${iterStat.index} + '].addressId'" th:value="${addr.addressId}" />
+                <div th:each="wrapper, iterStat : ${addressWithPrefs}" class="address-block">
+                  <input type="hidden" th:name="'addressDTOList[' + ${iterStat.index} + '].addressId'" th:value="${wrapper.address.addressId}" />
 
                   <select th:name="'addressDTOList[' + ${iterStat.index} + '].addressType.addressTypeId'"
                           class="address-select existing"
@@ -744,9 +744,13 @@
                     <option th:each="type : ${addressTypes}"
                             th:value="${type.addressTypeId}"
                             th:text="${type.addressTypeName}"
-                            th:selected="${type.addressTypeId == addr.addressType.addressTypeId}">
+                            th:selected="${type.addressTypeId == wrapper.address.addressType.addressTypeId}">
                     </option>
                   </select>
+
+                  <input type="hidden" th:id="'original-preference-id-' + ${iterStat.index}" th:value="${wrapper.preference?.preferenceId}" />
+                  <input type="hidden" th:id="'original-preference-type-id-' + ${iterStat.index}" th:value="${wrapper.preference?.preferenceType?.preferenceTypeId}" />
+                  <input type="hidden" th:id="'original-opted-in-' + ${iterStat.index}" th:value="${wrapper.preference?.optedIn}" />
                 </div>
 
 
@@ -769,8 +773,7 @@
 </div>
 
 <script th:inline="javascript">
-
- let subcategoryIndex = 1;
+  let subcategoryIndex = document.querySelectorAll(".address-select").length;
 
   function addSubcategoryInput() {
     const container = document.getElementById("address-container");
@@ -779,7 +782,7 @@
     div.classList.add("address-entry");
 
     const templateSelect = document.querySelector(".address-select");
-    const optionsHTML = templateSelect.innerHTML;
+    const optionsHTML = templateSelect ? templateSelect.innerHTML : "";
 
     div.innerHTML = `
       <select name="addressDTOList[${subcategoryIndex}].addressType.addressTypeId"
@@ -795,124 +798,177 @@
 
     const newSelect = div.querySelector("select");
     newSelect.addEventListener("change", function () {
-      createPreferenceForSelect(this);
+      onAddressTypeChange(this);
     });
 
     subcategoryIndex++;
+    updateAddressTypeOptions();
   }
 
+  function createPreferenceForSelect(selectElem, optedInValue = null, preferenceId = null) {
+    const index = parseInt(selectElem.getAttribute("data-index"), 10);
+    const preferenceContainer = document.getElementById("preference-container");
 
-function createPreferenceForSelect(selectElem, optedInValue = null, preferenceId = null) {
-  const index = parseInt(selectElem.getAttribute("data-index"), 10);
-  const preferenceContainer = document.getElementById("preference-container");
+    const selectedOption = selectElem.options[selectElem.selectedIndex];
+    const addressTypeId = selectedOption.value;
+    const addressTypeName = selectedOption.text;
 
-  const selectedOption = selectElem.options[selectElem.selectedIndex];
-  const addressTypeId = selectedOption.value;
-  const addressTypeName = selectedOption.text;
+    if (!addressTypeId) return;
 
-  if (!addressTypeId) return;
+    const existing = document.getElementById(`preference-${index}`);
+    if (existing) existing.remove();
 
-  const existing = document.getElementById(`preference-${index}`);
-  if (existing) existing.remove();
+    const prefDiv = document.createElement("div");
+    prefDiv.id = `preference-${index}`;
+    prefDiv.classList.add("preference-block");
+    prefDiv.style.marginBottom = "10px";
 
-  const prefDiv = document.createElement("div");
-  prefDiv.id = `preference-${index}`;
-  prefDiv.classList.add("preference-block");
-  prefDiv.style.marginBottom = "10px";
+    const isCheckedTrue = optedInValue === true ? "checked" : "";
+    const isCheckedFalse = optedInValue === false ? "checked" : "";
 
-  const isCheckedTrue = optedInValue === true ? "checked" : "";
-  const isCheckedFalse = optedInValue === false ? "checked" : "";
+    prefDiv.innerHTML = `
+      <label><strong>${addressTypeName}</strong> Preference</label>
+      ${preferenceId ? `<input type="hidden" name="preferenceDTOList[${index}].preferenceId" value="${preferenceId}" />` : ''}
+      <input type="hidden" name="preferenceDTOList[${index}].preferenceType.preferenceTypeId" value="${addressTypeId}" />
+      <div class="opt-in-out" style="margin-top: 6px;">
+        <input type="radio" id="in${index}" style="width:5%; height:10px" name="preferenceDTOList[${index}].optedIn" value="true" ${isCheckedTrue} />
+        <label for="in${index}">Opt-in</label>
+        <input type="radio" id="out${index}" style="width:5%; height:10px; margin-left: 15px;" name="preferenceDTOList[${index}].optedIn" value="false" ${isCheckedFalse} />
+        <label for="out${index}">Opt-out</label>
+      </div>
+    `;
 
-  prefDiv.innerHTML = `
-    <label><strong>${addressTypeName}</strong> Preference</label>
-    ${preferenceId !== null && preferenceId !== undefined ?
-      `<input type="hidden" name="preferenceDTOList[${index}].preferenceId" value="${preferenceId}" />` :
-      ''
+    preferenceContainer.appendChild(prefDiv);
+  }
+
+  function onAddressTypeChange(selectElem) {
+    const index = parseInt(selectElem.getAttribute("data-index"), 10);
+    const selectedTypeId = selectElem.value;
+
+    const originalTypeIdElem = document.getElementById(`original-preference-type-id-${index}`);
+    const originalPrefIdElem = document.getElementById(`original-preference-id-${index}`);
+    const originalOptedInElem = document.getElementById(`original-opted-in-${index}`);
+
+    let preferenceId = null;
+    let optedInValue = null;
+
+    if (originalTypeIdElem && originalPrefIdElem && originalOptedInElem) {
+      const originalTypeId = originalTypeIdElem.value;
+
+      if (originalTypeId === selectedTypeId) {
+        preferenceId = originalPrefIdElem.value;
+        optedInValue = originalOptedInElem.value === "true";
+      }
     }
-    <input type="hidden" name="preferenceDTOList[${index}].preferenceType.preferenceTypeId" value="${addressTypeId}" />
-    <div class="opt-in-out" style="margin-top: 6px;">
-      <input type="radio" id="in${index}" style="width:5%; height:10px" name="preferenceDTOList[${index}].optedIn" value="true" ${isCheckedTrue} />
-      <label for="in${index}">Opt-in</label>
-      <input type="radio" id="out${index}" style="width:5%; height:10px; margin-left: 15px;" name="preferenceDTOList[${index}].optedIn" value="false" ${isCheckedFalse} />
-      <label for="out${index}">Opt-out</label>
-    </div>
-  `;
 
-  preferenceContainer.appendChild(prefDiv);
-}
+    createPreferenceForSelect(selectElem, optedInValue, preferenceId);
+    updateAddressTypeOptions();
+  }
 
+  function updateAddressTypeOptions() {
+    const allSelects = document.querySelectorAll(".address-select");
 
- document.addEventListener("DOMContentLoaded", function () {
-  const allSelects = document.querySelectorAll(".address-select");
+    const selectedValues = Array.from(allSelects)
+      .map(sel => sel.value)
+      .filter(val => val !== "");
 
-  allSelects.forEach((selectElem, index) => {
-    selectElem.setAttribute("data-index", index);
-    selectElem.addEventListener("change", function () {
-      createPreferenceForSelect(this);
-    });
-  });
+    allSelects.forEach(currentSelect => {
+      const currentValue = currentSelect.value;
 
-  const form = document.getElementById("user-form");
-  if (form) {
-    form.addEventListener("submit", function () {
-      const blocks = document.querySelectorAll(".preference-block");
-
-      blocks.forEach(block => {
-        const radios = block.querySelectorAll("input[type='radio']");
-        const isChecked = Array.from(radios).some(r => r.checked);
-        if (!isChecked) {
-          block.remove();
-        }
+      Array.from(currentSelect.options).forEach(option => {
+        if (option.value === "") return;
+        option.disabled = selectedValues.includes(option.value) && option.value !== currentValue;
       });
     });
   }
-});
 
-  let newAddressIndex = 0;
+  document.addEventListener("DOMContentLoaded", function () {
+    const allSelects = document.querySelectorAll(".address-select");
 
-function addNewAddressInput() {
-  const container = document.getElementById("new-address-container");
+    allSelects.forEach((selectElem, index) => {
+      selectElem.setAttribute("data-index", index);
 
-  const templateSelect = document.querySelector(".address-select");
-  const optionsHTML = templateSelect ? templateSelect.innerHTML : "";
 
-  const div = document.createElement("div");
-  div.classList.add("address-entry");
+      selectElem.addEventListener("change", function () {
+        onAddressTypeChange(this);
+      });
 
-  div.innerHTML = `
-    <select name="address[${newAddressIndex}].addressType.addressTypeId"
-            class="address-select"
-            form="user-form"
-            style="margin-top:10px;"
-            data-index="${newAddressIndex}">
-      ${optionsHTML}
-    </select>
-  `;
 
-  container.appendChild(div);
 
-  const newSelect = div.querySelector("select");
-  newSelect.addEventListener("change", function () {
-    createPreferenceForNewAddress(this);
-  });
+      onAddressTypeChange(selectElem);
+    });
 
-  newAddressIndex++;
-}
- function logoutMenuToggle() {
-      const dropdown = document.getElementById("log-out-container");
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    updateAddressTypeOptions();
+
+    const form = document.getElementById("user-form");
+    if (form) {
+      form.addEventListener("submit", function () {
+        const blocks = document.querySelectorAll(".preference-block");
+
+        blocks.forEach(block => {
+          const radios = block.querySelectorAll("input[type='radio']");
+
+          const isChecked = Array.from(radios).some(r => r.checked);
+          if (!isChecked) {
+            block.remove();
+          }
+        });
+
+
+
+
+      });
     }
 
 
-    document.addEventListener("click", function (event) {
-      const container = document.getElementById("log-out-container");
+  });
 
-      const userLink = document.querySelector(".navbar-user a");
+  function addNewAddressInput() {
+    const container = document.getElementById("new-address-container");
 
-      if (!container.contains(event.target) && !userLink.contains(event.target)) {
-        container.style.display = "none";
-      }
+    const templateSelect = document.querySelector(".address-select");
+    const optionsHTML = templateSelect ? templateSelect.innerHTML : "";
+
+    const div = document.createElement("div");
+    div.classList.add("address-entry");
+
+    div.innerHTML = `
+      <select name="address[${subcategoryIndex}].addressType.addressTypeId"
+              class="address-select"
+              form="user-form"
+              style="margin-top:10px;"
+              data-index="${subcategoryIndex}">
+        ${optionsHTML}
+      </select>
+    `;
+
+    container.appendChild(div);
+
+    const newSelect = div.querySelector("select");
+    newSelect.addEventListener("change", function () {
+      onAddressTypeChange(this);
     });
+
+    subcategoryIndex++;
+    updateAddressTypeOptions();
+  }
+
+  function logoutMenuToggle() {
+    const dropdown = document.getElementById("log-out-container");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+
+  document.addEventListener("click", function (event) {
+    const container = document.getElementById("log-out-container");
+    const userLink = document.querySelector(".navbar-user a");
+
+    if (!container.contains(event.target) && !userLink.contains(event.target)) {
+      container.style.display = "none";
+    }
+  });
+
+
+
 </script>
 
 </body>
