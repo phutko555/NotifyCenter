@@ -29,7 +29,6 @@
       --transition-speed: 0.3s;
     }
 
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -57,7 +56,6 @@
       font-size: inherit;
     }
 
-
     #viewport {
       padding-left: var(--sidebar-width);
       transition: all var(--transition-speed) ease;
@@ -77,7 +75,6 @@
       margin: 0 auto;
       max-width: 1400px;
     }
-
 
     #sidebar {
       z-index: 1000;
@@ -144,11 +141,9 @@
       transition: opacity var(--transition-speed) ease;
     }
 
-
     .main-content {
       padding: 20px;
     }
-
 
     .search-bar-container {
       width: 100%;
@@ -204,7 +199,6 @@
       background-color: rgba(233, 234, 233, 0.58);
     }
 
-
     .customer-section-container {
       width: 100%;
       max-width: 1200px;
@@ -246,7 +240,6 @@
       background-color: #418a48;
     }
 
-
     .table-responsive-container {
       width: 100%;
       overflow-x: auto;
@@ -275,7 +268,6 @@
     tr:hover {
       background-color: rgba(229, 231, 235, 0.4);
     }
-
 
     .button-change {
       background-color: var(--primary-color);
@@ -309,7 +301,6 @@
       background-color: rgb(194, 59, 59);
     }
 
-
     td ul {
       margin: 0;
       padding: 0;
@@ -324,7 +315,6 @@
     td ul li:not(:last-child):after {
       content: ", ";
     }
-
 
     .navbar-user {
       border: 1px solid white;
@@ -366,7 +356,6 @@
       background-color: #c0392b;
     }
 
-
     .settings-container form {
       width: 100%;
       max-width: 600px;
@@ -401,7 +390,6 @@
       cursor: pointer;
       transition: background-color var(--transition-speed) ease;
     }
-
 
     .items-to-flex {
       display: flex;
@@ -464,7 +452,6 @@
       color: #444;
     }
 
-
     @media (max-width: 1199px) {
       .search-bar-container,
       .customer-section-container {
@@ -492,35 +479,7 @@
       }
     }
 
-    @media (max-width: 768px) {
-      .search-bar-container-1 {
-        flex-direction: column;
-      }
-
-      .search-button input {
-        width: 100%;
-      }
-
-      .header-button {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .header-button-add {
-        width: 100%;
-      }
-
-      .header-button-add button {
-        width: 100%;
-      }
-
-      .items-to-flex {
-        flex-direction: column;
-      }
-    }
-
-    @media (max-width: 576px) {
-
+    @media (max-width: 730px) {
       .table-responsive-container {
         overflow-x: visible;
       }
@@ -555,6 +514,7 @@
         padding: 8px !important;
         text-align: left !important;
         border-bottom: 1px solid #eee;
+        flex-direction: row;
       }
 
       td:before {
@@ -562,6 +522,7 @@
         font-weight: bold;
         margin-right: 10px;
         flex: 1;
+        text-align: left;
       }
 
       td > * {
@@ -569,37 +530,77 @@
         text-align: right;
       }
 
-      td:first-child {
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-        background-color: #f5f5f5;
-        font-weight: bold;
+      td:first-child,
+      td:last-child {
+        border-radius: 0;
+        background-color: transparent;
+        border-bottom: 1px solid #eee;
       }
 
-      td:last-child {
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-        border-bottom: none;
+      td ul {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        text-align: right;
+        width: 100%;
+      }
+
+      td ul li {
+        display: block;
+        margin: 2px 0;
+      }
+
+      td ul li:not(:last-child):after {
+        content: "";
       }
 
       td div {
         display: flex;
         gap: 8px;
         justify-content: flex-end;
+        width: 100%;
       }
 
-      .button-change,
-      .button-remove {
-        width: auto;
-        margin: 3px 0;
+      td:nth-child(1):before {
+        content: "ID";
+      }
+      td:nth-child(2):before {
+        content: "მომხმარებელი";
+      }
+      td:nth-child(3):before {
+        content: "Preferences";
+      }
+      td:nth-child(4):before {
+        content: "მისამართები";
+      }
+      td:nth-child(5):before {
+        content: "განახლება";
+      }
+    }
+    @media (max-width: 768px) {
+      .search-bar-container-1 {
+        flex-direction: column;
       }
 
-      td ul {
-        text-align: right;
+      .search-button input {
+        width: 100%;
       }
 
-      td ul li {
-        display: inline;
+      .header-button {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-button-add {
+        width: 100%;
+      }
+
+      .header-button-add button {
+        width: 100%;
+      }
+
+      .items-to-flex {
+        flex-direction: column;
       }
     }
 
@@ -631,392 +632,303 @@
         width: 100%;
       }
     }
-  </style>
+    </style>
 </head>
+
 <body>
 <div id="viewport">
-  <div id="sidebar">
-    <header>
-      <a href="/admin/dashboard"
-      ><img
-              src="/uploads/notify-center-logo.png"
-              style="width: 90px"
-              height="auto"
-              alt=""
-      /></a>
-    </header>
-    <ul class="nav">
-      <li>
-        <a href="/admin/dashboard"> <i class="zmdi zmdi-view-dashboard"></i> Dashboard </a>
-      </li>
-      <li>
-        <a href="/admin/customers"> <i class="zmdi zmdi-link"></i> მომხმარებლები </a>
-      </li>
-      <li>
-        <a href="/admin/addresses"> <i class="zmdi zmdi-widgets"></i> მისამართები </a>
-      </li>
-      <li>
-        <a href="/admin/preferences"> <i class="zmdi zmdi-calendar"></i> Preferences </a>
-      </li>
-      <li>
-        <a href="/admin/reporting"> <i class="zmdi zmdi-info-outline"></i> Reporting </a>      </li>
-    </ul>
+<div id="sidebar">
+  <header>
+    <a href="/admin/dashboard"
+    ><img
+            src="/uploads/notify-center-logo.png"
+            style="width: 90px"
+            height="auto"
+            alt=""
+    /></a>
+  </header>
+  <ul class="nav">
+    <li>
+      <a href="/admin/dashboard"> <i class="zmdi zmdi-view-dashboard"></i> Dashboard </a>
+    </li>
+    <li>
+      <a href="/admin/customers"> <i class="zmdi zmdi-link"></i> მომხმარებლები </a>
+    </li>
+    <li>
+      <a href="/admin/addresses"> <i class="zmdi zmdi-widgets"></i> მისამართები </a>
+    </li>
+    <li>
+      <a href="/admin/preferences"> <i class="zmdi zmdi-calendar"></i> Preferences </a>
+    </li>
+    <li>
+      <a href="/admin/reporting"> <i class="zmdi zmdi-info-outline"></i> Reporting </a>      </li>
+  </ul>
+</div>
+
+
+<div id="content">
+  <nav class="navbar navbar-default" style="background-color: #f4f6f9">
+    <div class="container-fluid" style="background-color: #f4f6f9">
+      <ul class="nav navbar-nav navbar-right">
+        <li class="navbar-user" style="position: relative;">
+          <a href="#"  th:text="${user.username}" onclick="logoutMenuToggle()"></a>
+          <div id="log-out-container" class="logout-dropdown">
+            <form th:action="@{/logout}" method="post">
+              <button type="submit" class="logout-button">გამოსვლა</button>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="search-bar-container">
+      <form method="get" action="/customer/filtered-customers">
+        <div class="search-bar-container-1">
+          <div class="search-actual-bar">
+            <input type="search" name="keyword" th:value="${keyword}" placeholder="მოძებნე მომხმარებელი..." />
+          </div>
+          <div class="search-button">
+            <input type="submit" value="ძებნა" />
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 
+  <div class="container-fluid">
+    <div class="search-bar-container">
+      <form method="get" action="/customer/filtered-customers">
+        <input type="hidden" name="keyword" th:value="${keyword}">
+        <h3 style="text-align:center">გაფილტვრა</h3>
+        <div class="search-bar-container-1">
+          <div class="search-actual-bar">
+                        <div class="items-to-flex" style="margin-top: 12px">
+                          <div
+                                  class="first-name-input user-info"
+                                  id="address-container-1"
+                                  style="flex: 1"
+                          >
+                            <select name="preferenceType" class="address-select-1">
+                              <option disabled selected th:if="${preferType == null}">აირჩიეთ Preference</option>
 
-  <div id="content">
-    <nav class="navbar navbar-default" style="background-color: #f4f6f9">
-      <div class="container-fluid" style="background-color: #f4f6f9">
-        <ul class="nav navbar-nav navbar-right">
-          <li class="navbar-user" style="position: relative;">
-            <a href="#"  th:text="${user.username}" onclick="logoutMenuToggle()"></a>
-            <div id="log-out-container" class="logout-dropdown">
-              <form th:action="@{/logout}" method="post">
-                <button type="submit" class="logout-button">გამოსვლა</button>
-              </form>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <div class="container-fluid">
-      <div class="search-bar-container">
-        <form method="get" action="/customer/filtered-customers">
-          <div class="search-bar-container-1">
-            <div class="search-actual-bar">
-              <input type="search" name="keyword" th:value="${keyword}" placeholder="მოძებნე მომხმარებელი..." />
-            </div>
-            <div class="search-button">
-              <input type="submit" value="ძებნა" />
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="container-fluid">
-      <div class="search-bar-container">
-        <form method="get" action="/customer/filtered-customers">
-          <input type="hidden" name="keyword" th:value="${keyword}">
-          <h3 style="text-align:center">გაფილტვრა</h3>
-          <div class="search-bar-container-1">
-            <div class="search-actual-bar">
-                          <div class="items-to-flex" style="margin-top: 12px">
-                            <div
-                                    class="first-name-input user-info"
-                                    id="address-container-1"
-                                    style="flex: 1"
-                            >
-                              <select name="preferenceType" class="address-select-1">
-                                <option disabled selected th:if="${preferType == null}">აირჩიეთ Preference</option>
-
-                                <option th:each="preferenceType : ${preferenceTypes}"
-                                        th:value="${preferenceType.preferenceTypeId}"
-                                        th:text="${preferenceType.preferenceTypeName}"
-                                        th:selected="${preferType != null and preferenceType.preferenceTypeId == preferType}">
-                                </option>
-                              </select>
-                            </div>
-                            <div class="last-name-input user-info" style="flex: 1;" id="">
-                            </div>
+                              <option th:each="preferenceType : ${preferenceTypes}"
+                                      th:value="${preferenceType.preferenceTypeId}"
+                                      th:text="${preferenceType.preferenceTypeName}"
+                                      th:selected="${preferType != null and preferenceType.preferenceTypeId == preferType}">
+                              </option>
+                            </select>
                           </div>
+                          <div class="last-name-input user-info" style="flex: 1;" id="">
+                          </div>
+                        </div>
 
+          </div>
+          <select name="sortBy" class="form-control" style="flex: 1;">
+            <option disabled selected th:if="${sortBy == null}">აირჩიეთ სორტირება</option>
+            <option value="firstNameAsc" th:selected="${sortBy == 'firstNameAsc'}">სახელი (A-Z)</option>
+            <option value="firstNameDesc" th:selected="${sortBy == 'firstNameDesc'}">სახელი (Z-A)</option>
+
+            <option value="createdAtDesc" th:selected="${sortBy == 'createdAtDesc'}">ახალი მომხმარებლები</option>
+            <option value="createdAtAsc" th:selected="${sortBy == 'createdAtAsc'}">ძველი მომხმარებლები</option>
+          </select>
+
+
+          <div class="search-button">
+            <input type="submit" value="ძებნა" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="container-fluid" id="list-container">
+    <div class="customer-section-container">
+      <div
+              class="header-button"
+              style="display: flex; justify-content: space-between"
+      >
+        <div class="customer-section-header">
+          <h4>მომხმარებლების სია</h4>
+        </div>
+        <div class="header-button-add">
+          <button onclick="addMethodAppear()">+ დამატება</button>
+        </div>
+      </div>
+
+      <div class="settings-container" style="padding-bottom:50px;">
+        <table>
+          <thead class="desktop-only">
+          <tr>
+            <th>ID</th>
+            <th>მომხმარებელი</th>
+            <th>Preferences</th>
+            <th>მისამართები</th>
+            <th>განახლება</th>
+          </tr>
+          </thead>
+          <tr th:each="customer : ${customers}">
+            <td data-label="ID" th:text="${customer.userId}"></td>
+            <td data-label="მომხმარებელი" th:text="${customer.firstName + ' ' + customer.lastName}"></td>
+            <td data-label="Preferences">
+              <ul th:if="${customer.preference != null}" th:each="pref : ${customer.preference}">
+                <li
+                    th:text="${pref.preferenceType.preferenceTypeName}">
+                </li>
+                <li th:style="${pref.optedIn} ? 'color:green;font-weight:bold;' : 'color:red;font-weight:bold;'"
+                    th:text="${pref.optedIn ? '✔ Opted In' : '✖ Opted Out'}">
+                </li>
+              </ul>
+            </td>
+            <td data-label="მისამართები">
+              <ul>
+                <li th:each="address : ${customer.address ?: {}}"
+                    th:text="${address.addressType.addressTypeName}"></li>
+              </ul>
+            </td>
+
+            <td data-label="განახლება">
+              <div>
+                <form method="get" th:action="@{/admin/update/{customerId}(customerId=${customer.userId})}">
+                <button class="button-change" >შეცვლა</button>
+                </form>
+                <form method="post" th:action="@{/customer/remove-customer/{customerId}(customerId=${customer.userId})}">
+                  <input type="hidden" name="_method" value="delete">
+                  <button class="button-remove" style="margin-top:10px;">წაშლა</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid" style="display: none" id="add-container">
+    <div class="customer-section-container">
+      <div
+              class="header-button"
+              style="display: flex; justify-content: space-between"
+      >
+        <div class="customer-section-header">
+          <h4>მომხმარებლების დამატება</h4>
+        </div>
+        <div class="header-button-add">
+          <button onclick="listAppear()">უკან დაბრუნება</button>
+        </div>
+      </div>
+
+      <div class="settings-container">
+        <form style="text-align: center" id="user-form" method="post" action="/customer/add-customer">
+          <div class="items-to-flex">
+            <div
+                    class="first-name-input user-info"
+                    id="first_name"
+                    style="flex: 1"
+            >
+              <input type="text" placeholder="სახელი" name="firstName" required />
             </div>
-            <select name="sortBy" class="form-control" style="flex: 1;">
-              <option disabled selected th:if="${sortBy == null}">აირჩიეთ სორტირება</option>
-              <option value="firstNameAsc" th:selected="${sortBy == 'firstNameAsc'}">სახელი (A-Z)</option>
-              <option value="firstNameDesc" th:selected="${sortBy == 'firstNameDesc'}">სახელი (Z-A)</option>
-
-              <option value="createdAtDesc" th:selected="${sortBy == 'createdAtDesc'}">ახალი მომხმარებლები</option>
-              <option value="createdAtAsc" th:selected="${sortBy == 'createdAtAsc'}">ძველი მომხმარებლები</option>
-            </select>
-
-
-            <div class="search-button">
-              <input type="submit" value="ძებნა" />
+            <div class="last-name-input user-info" style="flex: 1">
+              <input type="text" placeholder="გვარი" name="lastName"required />
             </div>
+          </div>
+          <div class="last-name-input user-info-mail">
+            <input type="text" placeholder="ელექტრონული ფოსტა" name="mail" required/>
+          </div>
+          <div class="items-to-flex" style="margin-top: 12px">
+            <div
+                    class="first-name-input user-info"
+                    id="first_name"
+                    style="flex: 1"
+            >
+              <input
+                      type="tel"
+                      id="tel"
+                      placeholder="ნომერი"
+                      value="+995 " name="number" required
+              />
+            </div>
+
+            <div class="last-name-input user-info" style="flex: 1">
+              <input type="text" placeholder="იურიდიული მისამართი" name="legalAddress" />
+            </div>
+          </div>
+          <div class="items-to-flex" style="margin-top: 12px">
+            <div
+                    class="first-name-input user-info"
+                    id="address-container"
+                    style="flex: 1"
+            >
+              <select name="addressDTOList[0].addressType.addressTypeId" required  class="address-select" form="user-form" id="address-options-template">
+
+                <option disabled  selected value="" > აირჩიეთ მისამართი </option>
+
+                <option th:each="addressType : ${addressTypes}"
+                        th:value="${addressType.addressTypeId}"
+                        th:text="${addressType.addressTypeName}">
+                </option>
+              </select>
+            </div>
+
+            <div class="last-name-input user-info" style="flex: 1;" id="preference-container">
+                </div>
+          </div>
+          <div class="items-to-flex" style="margin-top: 10px; text-align:center;" >
+            <div
+                    class="first-name-input user-info"
+                    style="flex: 1; width: 100%"
+            >
+              <input
+                      type="button"
+                      onclick="addSubcategoryInput()"
+                      value="+ მისამართის დამატება "
+              />
+            </div>
+
+          </div>
+          <div
+                  class="last-name-input button-save"
+                  style="margin-top: 20px"
+          >
+            <input type="submit" placeholder="" value="დამატება" />
           </div>
         </form>
-      </div>
-    </div>
-
-    <div class="container-fluid" id="list-container">
-      <div class="customer-section-container">
-        <div
-                class="header-button"
-                style="display: flex; justify-content: space-between"
-        >
-          <div class="customer-section-header">
-            <h4>მომხმარებლების სია</h4>
-          </div>
-          <div class="header-button-add">
-            <button onclick="addMethodAppear()">+ დამატება</button>
-          </div>
-        </div>
-
-        <div class="settings-container" style="padding-bottom:50px;">
-          <table>
-            <tr>
-              <th>ID</th>
-              <th>მომხმარებელი</th>
-              <th>Preferences</th>
-              <th>მისამართები</th>
-              <th>განახლება</th>
-            </tr>
-            <tr th:each="customer : ${customers}">
-              <td th:text="${customer.userId}"></td>
-              <td th:text="${customer.firstName + ' ' + customer.lastName}"></td>
-              <td>
-                <ul th:if="${customer.preference != null}" th:each="pref : ${customer.preference}">
-                  <li
-                      th:text="${pref.preferenceType.preferenceTypeName}">
-                  </li>
-                  <li th:style="${pref.optedIn} ? 'color:green;font-weight:bold;' : 'color:red;font-weight:bold;'"
-                      th:text="${pref.optedIn ? '✔ Opted In' : '✖ Opted Out'}">
-                  </li>
-                </ul>
-              </td>
-              <td>
-                <ul>
-                  <li th:each="address : ${customer.address ?: {}}"
-                      th:text="${address.addressType.addressTypeName}"></li>
-                </ul>
-              </td>
-
-              <td>
-                <div>
-                  <form method="get" th:action="@{/admin/update/{customerId}(customerId=${customer.userId})}">
-                  <button class="button-change" >შეცვლა</button>
-                  </form>
-                  <form method="post" th:action="@{/customer/remove-customer/{customerId}(customerId=${customer.userId})}">
-                    <input type="hidden" name="_method" value="delete">
-                    <button class="button-remove" style="margin-top:10px;">წაშლა</button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid" style="display: none" id="add-container">
-      <div class="customer-section-container">
-        <div
-                class="header-button"
-                style="display: flex; justify-content: space-between"
-        >
-          <div class="customer-section-header">
-            <h4>მომხმარებლების დამატება</h4>
-          </div>
-          <div class="header-button-add">
-            <button onclick="listAppear()">უკან დაბრუნება</button>
-          </div>
-        </div>
-
-        <div class="settings-container">
-          <form style="text-align: center" id="user-form" method="post" action="/customer/add-customer">
-            <div class="items-to-flex">
-              <div
-                      class="first-name-input user-info"
-                      id="first_name"
-                      style="flex: 1"
-              >
-                <input type="text" placeholder="სახელი" name="firstName" required />
-              </div>
-              <div class="last-name-input user-info" style="flex: 1">
-                <input type="text" placeholder="გვარი" name="lastName"required />
-              </div>
-            </div>
-            <div class="last-name-input user-info-mail">
-              <input type="text" placeholder="ელექტრონული ფოსტა" name="mail" required/>
-            </div>
-            <div class="items-to-flex" style="margin-top: 12px">
-              <div
-                      class="first-name-input user-info"
-                      id="first_name"
-                      style="flex: 1"
-              >
-                <input
-                        type="tel"
-                        id="tel"
-                        placeholder="ნომერი"
-                        value="+995 " name="number" required
-                />
-              </div>
-
-              <div class="last-name-input user-info" style="flex: 1">
-                <input type="text" placeholder="იურიდიული მისამართი" name="legalAddress" />
-              </div>
-            </div>
-            <div class="items-to-flex" style="margin-top: 12px">
-              <div
-                      class="first-name-input user-info"
-                      id="address-container"
-                      style="flex: 1"
-              >
-                <select name="addressDTOList[0].addressType.addressTypeId" required  class="address-select" form="user-form" id="address-options-template">
-
-                  <option disabled  selected value="" > აირჩიეთ მისამართი </option>
-
-                  <option th:each="addressType : ${addressTypes}"
-                          th:value="${addressType.addressTypeId}"
-                          th:text="${addressType.addressTypeName}">
-                  </option>
-                </select>
-              </div>
-
-              <div class="last-name-input user-info" style="flex: 1;" id="preference-container">
-                  </div>
-            </div>
-            <div class="items-to-flex" style="margin-top: 10px; text-align:center;" >
-              <div
-                      class="first-name-input user-info"
-                      style="flex: 1; width: 100%"
-              >
-                <input
-                        type="button"
-                        onclick="addSubcategoryInput()"
-                        value="+ მისამართის დამატება "
-                />
-              </div>
-
-            </div>
-            <div
-                    class="last-name-input button-save"
-                    style="margin-top: 20px"
-            >
-              <input type="submit" placeholder="" value="დამატება" />
-            </div>
-          </form>
-        </div>
       </div>
     </div>
   </div>
 </div>
+</div>
 
 <script th:inline="javascript">
-  function addMethodAppear() {
-       document.getElementById("list-container").style.display = "none";
-       document.getElementById("add-container").style.display = "block";
-     }
+function addMethodAppear() {
+     document.getElementById("list-container").style.display = "none";
+     document.getElementById("add-container").style.display = "block";
+   }
 
-     function listAppear() {
-       document.getElementById("add-container").style.display = "none";
-       document.getElementById("list-container").style.display = "block";
-     }
-
-
- let subcategoryIndex = 1;
-
-  function addSubcategoryInput() {
-    const container = document.getElementById("address-container");
-
-    const div = document.createElement("div");
-    div.classList.add("address-entry");
-
-    const templateSelect = document.querySelector(".address-select");
-    const optionsHTML = templateSelect.innerHTML;
-
-    div.innerHTML = `
-      <select name="addressDTOList[${subcategoryIndex}].addressType.addressTypeId"
-              class="address-select"
-              form="user-form"
-              style="margin-top:10px;"
-              data-index="${subcategoryIndex}">
-        ${optionsHTML}
-      </select>
-    `;
-
-    container.appendChild(div);
-
-    const newSelect = div.querySelector("select");
-    newSelect.addEventListener("change", function () {
-      createPreferenceForSelect(this);
-    });
-
-    subcategoryIndex++;
-  }
+   function listAppear() {
+     document.getElementById("add-container").style.display = "none";
+     document.getElementById("list-container").style.display = "block";
+   }
 
 
-  function createPreferenceForSelect(selectElem) {
-    const index = parseInt(selectElem.getAttribute("data-index"), 10);
-    const preferenceContainer = document.getElementById("preference-container");
+let subcategoryIndex = 1;
 
-    const selectedOption = selectElem.options[selectElem.selectedIndex];
-    const addressTypeId = selectedOption.value;
-    const addressTypeName = selectedOption.text;
-
-
-    if (!addressTypeId) return;
-
-    const existing = document.getElementById(`preference-${index}`);
-    if (existing) existing.remove();
-
-    const prefDiv = document.createElement("div");
-    prefDiv.id = `preference-${index}`;
-    prefDiv.classList.add("preference-block");
-    prefDiv.style.marginBottom = "10px";
-
-    prefDiv.innerHTML = `
-      <label><strong>${addressTypeName}</strong> Preference</label>
-      <input type="hidden" name="preferenceDTOList[${index}].preferenceType.preferenceTypeId" value="${addressTypeId}" />
-      <div class="opt-in-out" style="margin-top: 6px;">
-        <input type="radio" id="in${index}" style="width:5%; height:10px" required name="preferenceDTOList[${index}].optedIn" value="true" />
-        <label for="in${index}">Opt-in</label>
-        <input type="radio" id="out${index}" style="width:5%; height:10px; margin-left: 15px;" name="preferenceDTOList[${index}].optedIn" value="false" />
-        <label for="out${index}">Opt-out</label>
-      </div>
-    `;
-
-    preferenceContainer.appendChild(prefDiv);
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const firstSelect = document.querySelector(".address-select");
-    if (firstSelect) {
-      firstSelect.setAttribute("data-index", "0");
-      firstSelect.addEventListener("change", function () {
-        createPreferenceForSelect(this);
-      });
-    }
-
-    const form = document.getElementById("user-form");
-    if (form) {
-      form.addEventListener("submit", function () {
-
-        const blocks = document.querySelectorAll(".preference-block");
-
-        blocks.forEach(block => {
-          const radios = block.querySelectorAll("input[type='radio']");
-          const isChecked = Array.from(radios).some(r => r.checked);
-          if (!isChecked) {
-            block.remove();
-          }
-        });
-      });
-    }
-  });
-
-
-  let newAddressIndex = 0;
-
-function addNewAddressInput() {
-  const container = document.getElementById("new-address-container");
-
-  const templateSelect = document.querySelector(".address-select");
-  const optionsHTML = templateSelect ? templateSelect.innerHTML : "";
+function addSubcategoryInput() {
+  const container = document.getElementById("address-container");
 
   const div = document.createElement("div");
   div.classList.add("address-entry");
 
+  const templateSelect = document.querySelector(".address-select");
+  const optionsHTML = templateSelect.innerHTML;
+
   div.innerHTML = `
-    <select name="address[${newAddressIndex}].addressType.addressTypeId"
+    <select name="addressDTOList[${subcategoryIndex}].addressType.addressTypeId"
             class="address-select"
             form="user-form"
             style="margin-top:10px;"
-            data-index="${newAddressIndex}">
+            data-index="${subcategoryIndex}">
       ${optionsHTML}
     </select>
   `;
@@ -1025,26 +937,118 @@ function addNewAddressInput() {
 
   const newSelect = div.querySelector("select");
   newSelect.addEventListener("change", function () {
-    createPreferenceForNewAddress(this);
+    createPreferenceForSelect(this);
   });
 
-  newAddressIndex++;
+  subcategoryIndex++;
 }
- function logoutMenuToggle() {
-      const dropdown = document.getElementById("log-out-container");
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    }
 
 
-    document.addEventListener("click", function (event) {
-      const container = document.getElementById("log-out-container");
+function createPreferenceForSelect(selectElem) {
+  const index = parseInt(selectElem.getAttribute("data-index"), 10);
+  const preferenceContainer = document.getElementById("preference-container");
 
-      const userLink = document.querySelector(".navbar-user a");
+  const selectedOption = selectElem.options[selectElem.selectedIndex];
+  const addressTypeId = selectedOption.value;
+  const addressTypeName = selectedOption.text;
 
-      if (!container.contains(event.target) && !userLink.contains(event.target)) {
-        container.style.display = "none";
-      }
+
+  if (!addressTypeId) return;
+
+  const existing = document.getElementById(`preference-${index}`);
+  if (existing) existing.remove();
+
+  const prefDiv = document.createElement("div");
+  prefDiv.id = `preference-${index}`;
+  prefDiv.classList.add("preference-block");
+  prefDiv.style.marginBottom = "10px";
+
+  prefDiv.innerHTML = `
+    <label><strong>${addressTypeName}</strong> Preference</label>
+    <input type="hidden" name="preferenceDTOList[${index}].preferenceType.preferenceTypeId" value="${addressTypeId}" />
+    <div class="opt-in-out" style="margin-top: 6px;">
+      <input type="radio" id="in${index}" style="width:5%; height:10px" required name="preferenceDTOList[${index}].optedIn" value="true" />
+      <label for="in${index}">Opt-in</label>
+      <input type="radio" id="out${index}" style="width:5%; height:10px; margin-left: 15px;" name="preferenceDTOList[${index}].optedIn" value="false" />
+      <label for="out${index}">Opt-out</label>
+    </div>
+  `;
+
+  preferenceContainer.appendChild(prefDiv);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const firstSelect = document.querySelector(".address-select");
+  if (firstSelect) {
+    firstSelect.setAttribute("data-index", "0");
+    firstSelect.addEventListener("change", function () {
+      createPreferenceForSelect(this);
     });
+  }
+
+  const form = document.getElementById("user-form");
+  if (form) {
+    form.addEventListener("submit", function () {
+
+      const blocks = document.querySelectorAll(".preference-block");
+
+      blocks.forEach(block => {
+        const radios = block.querySelectorAll("input[type='radio']");
+        const isChecked = Array.from(radios).some(r => r.checked);
+        if (!isChecked) {
+          block.remove();
+        }
+      });
+    });
+  }
+});
+
+
+let newAddressIndex = 0;
+
+function addNewAddressInput() {
+const container = document.getElementById("new-address-container");
+
+const templateSelect = document.querySelector(".address-select");
+const optionsHTML = templateSelect ? templateSelect.innerHTML : "";
+
+const div = document.createElement("div");
+div.classList.add("address-entry");
+
+div.innerHTML = `
+  <select name="address[${newAddressIndex}].addressType.addressTypeId"
+          class="address-select"
+          form="user-form"
+          style="margin-top:10px;"
+          data-index="${newAddressIndex}">
+    ${optionsHTML}
+  </select>
+`;
+
+container.appendChild(div);
+
+const newSelect = div.querySelector("select");
+newSelect.addEventListener("change", function () {
+  createPreferenceForNewAddress(this);
+});
+
+newAddressIndex++;
+}
+function logoutMenuToggle() {
+    const dropdown = document.getElementById("log-out-container");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+
+
+  document.addEventListener("click", function (event) {
+    const container = document.getElementById("log-out-container");
+
+    const userLink = document.querySelector(".navbar-user a");
+
+    if (!container.contains(event.target) && !userLink.contains(event.target)) {
+      container.style.display = "none";
+    }
+  });
 
 
 </script>
