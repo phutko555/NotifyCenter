@@ -1,5 +1,6 @@
 package com.crocobet.notifications.controller.preference;
 
+import com.crocobet.notifications.dto.preferenceDTO.BatchPreferenceUpdateRequest;
 import com.crocobet.notifications.dto.preferenceDTO.PreferenceUpdateRequest;
 import com.crocobet.notifications.model.address.Address;
 import com.crocobet.notifications.model.preference.Preference;
@@ -46,6 +47,23 @@ public class PreferenceRestController {
         }
         return ResponseEntity.ok(preferences);
     }
+
+    @PutMapping("/batch-update")
+    public ResponseEntity<String> updatePreferencesBatch(
+            @RequestBody BatchPreferenceUpdateRequest request) {
+        try {
+            preferenceService.updatePreferencesBatch(
+                    request.getCustomerIds(),
+                    request.getPreferenceTypeId(),
+                    request.isOptedIn()
+            );
+            return ResponseEntity.ok("სტატუსები წარმატებით განახლდა");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("დაფიქსირდა შეცდომა: " + e.getMessage());
+        }
+    }
+
 
 
 }

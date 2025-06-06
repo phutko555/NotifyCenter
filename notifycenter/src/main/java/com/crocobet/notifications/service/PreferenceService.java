@@ -47,4 +47,17 @@ public class PreferenceService {
         targetPref.setOptedIn(optedIn);
         userRepository.save(user);
     }
+
+    @Transactional
+    public void updatePreferencesBatch(List<Long> customerIds, Long preferenceTypeId, boolean optedIn) {
+        List<Preference> preferences = preferenceRepository
+                .findByUser_UserIdInAndPreferenceType_PreferenceTypeId(customerIds, preferenceTypeId);
+
+        for (Preference preference : preferences) {
+            preference.setOptedIn(optedIn);
+        }
+
+        preferenceRepository.saveAll(preferences);
+    }
+
 }
