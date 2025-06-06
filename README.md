@@ -1,74 +1,142 @@
-# 📬 Customer Notification Address Facade System
+# Notifications Microservice
 
-This project is a Spring Boot microservice designed to centralize and manage customer contact information, notification preferences, and notification delivery statuses. It acts as the **single source of truth** for all recipient addresses and their delivery states, enabling other microservices to efficiently fetch and update customer delivery data.
+## 📋 Project Overview
 
----
+This project implements a **Customer Notification Address Facade System**, which serves as a centralized microservice for managing customer contact information, addresses, and notification preferences. It provides a single source of truth for other services in the ecosystem to fetch, update, and track notification-related data.
 
-## 🚀 Key Features
+## 🔑 Key Features
 
-### 👤 User Management
-- Admin account creation and management
-- Secure login for administrators
+### ✅ User Management
 
-### 👥 Customer Management
-- Add, update, delete customer records
-- Store customer details (name, contact info, etc.)
-- Display a list of customers with notification preferences
+* Secure admin login using Spring Security.
+* Admins can manage customer records and system settings.
+
+### 👤 Customer Management
+
+* Add new customers with personal and contact information.
+* Edit, update, and delete customer records.
+* View a list of all customers and their preferences.
 
 ### 🏠 Address Management
-- Manage multiple address types (email, SMS, postal)
-- Update/remove outdated addresses
-- Associate multiple addresses with a single customer
 
-### ✅ Preference Management
-- Manage opt-in/opt-out preferences for different notification types
-- Update preferences on customer request
-- Display current preferences per customer
+* Store multiple address types (email, SMS, postal, etc.).
+* Admins can use a **hybrid approach**:
 
-### 🔌 Integration and API
-- RESTful API for address and preference access
-- Secure, authenticated API access
-- Batch update support
+  * Choose from predefined address types.
+  * Manually add new types for flexibility.
+* Remove or update outdated addresses.
 
-### 📡 Notification Tracking
-- Track notification status: delivered, failed, or pending
-- Endpoints for querying notification status
-- Reports for delivery success rates
+### 🎯 Preference Management
 
-### 🔍 Search and Filtering
-- Search customers by name, contact info, or preferences
-- Sort and filter customer lists
+* Set notification preferences (opt-in/out for email, SMS, etc.).
+* View and update current preferences.
+* Hybrid approach for types: predefined + admin-defined.
+
+### 🔁 Integration & REST API
+
+* RESTful API available for other systems to fetch and update customer data.
+* Batch updates supported.
+
+### 📨 Notification Tracking
+
+* Track delivery status of notifications: `delivered`, `failed`, `pending`.
+* Endpoints to query status and generate delivery reports.
+
+### 🔍 Search & Filtering
+
+* Search customers by name, surname, contact info, and preferences.
+* Sort and filter the customer list based on criteria.
 
 ### 📊 Reporting
-- Generate opt-in statistics and notification reports
-- Visual delivery metrics (success/failure rates)
 
----
+* Generate reports on customer data (e.g., opt-in stats).
+* Notification delivery rate statistics.
 
-## 🛠️ Tech Stack
+## ⚙️ Project Structure
 
-- **Java .**
-- **Spring Boot 3**
-- **Spring Data JPA**
-- **Spring Security**
-- **Thymeleaf** (for admin UI)
-- **Postgres** 
-- **Tailwind CSS / Bootstrap**
+`User`: Represents admins and customer data.
 
-- **Maven**
+ `Address` & `AddressType`: Stores various types of contact details.
 
----
+ `Preference` & `PreferenceType`: Represents user opt-in/out settings.
 
-## ⚙️ Setup Instructions
+ `Notification`: Tracks the status of message deliveries.
 
-### 1. Clone the Repository
+ `DTOs`: Used for request/response data exchange.
+
+ `Controllers`: Manage web pages and REST endpoints.
+
+ `Services`: Contain business logic for user, address, and preference handling.
+
+ `Repositories`: Spring Data JPA for DB access.
+
+ `SecurityConfig`: Secures endpoints with role-based access.
+
+## 🔐 API Security for Microservice Communication
+
+As i saw the primary role was to manage customer contact data, addresses, and notification preferences. 
+
+## `/api/**` Endpoints — why i used SYSTEM Role?
+
+The following API endpoints are **intended to be accessed only by external services** within the ecosystem:
+
+ `/api/notifications/**`
+ `/api/preferences/**`
+ `/api/address/**`
+
+I used  security using `.hasRole("SYSTEM")`**, which means:
+
+ Only users or services authenticated with the `SYSTEM` role can access these endpoints.
+This ensures that only trusted backend services  such as notification dispatchers can call sensitive endpoints like `/track`, `/update`, etc.
+
+### 🔐 Example Security Configuration
+
+```java
+.requestMatchers("/api/notifications/**").hasRole("SYSTEM")
+```
+
+
+###  Example SYSTEM User for Test
+
+```java
+@Bean
+public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+    UserDetails systemUser = User.withUsername("notifier")
+        .password(encoder.encode("securepass"))
+        .roles("SYSTEM")
+        .build();
+
+    return new InMemoryUserDetailsManager(systemUser);
+}
+```
+
+
+### ⚙️ Setup
+
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/phutko555/NotifyCenter.git
-cd NotifyCenter
+cd notifications
+```
+
+2. Configure the database connection in `application.yml` or `application.properties`:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/notifications
+spring.datasource.username=youruser
+spring.datasource.password=yourpassword
+```
+
+3. Run the application:
+
+```bash
+./mvnw spring-boot:run
+```
+
+4. Access it in your browser:
+
+* Login: `http://localhost:8666/login`
+* Admin Dashboard: `http://localhost:8666/admin/dashboard`
 
 
-> ℹ️ By default, the application runs on **port 8666**. 
-> ```properties
-> server.port=8666
-> ```
