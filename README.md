@@ -1,90 +1,104 @@
-Notifications Microservice
+# Notifications Microservice
 
-📋 Project Overview
+## 📋 Project Overview
 
-This project implements a Customer Notification Address Facade System, which serves as a centralized microservice for managing customer contact information, addresses, and notification preferences. It provides a single source of truth for other services in the ecosystem to fetch, update, and track notification-related data.
+This project implements a **Customer Notification Address Facade System**, which serves as a centralized microservice for managing customer contact information, addresses, and notification preferences. It provides a single source of truth for other services in the ecosystem to fetch, update, and track notification-related data.
 
-🔑 Key Features
+## 🔑 Key Features
 
-✅ User Management
+### ✅ User Management
 
-Secure admin login using Spring Security.
-Admins can manage customer records and system settings.
-👤 Customer Management
+* Secure admin login using Spring Security.
+* Admins can manage customer records and system settings.
 
-Add new customers with personal and contact information.
-Edit, update, and delete customer records.
-View a list of all customers and their preferences.
-🏠 Address Management
+### 👤 Customer Management
 
-Store multiple address types (email, SMS, postal, etc.).
+* Add new customers with personal and contact information.
+* Edit, update, and delete customer records.
+* View a list of all customers and their preferences.
 
-Admins can use a hybrid approach:
+### 🏠 Address Management
 
-Choose from predefined address types.
-Manually add new types for flexibility.
-Remove or update outdated addresses.
+* Store multiple address types (email, SMS, postal, etc.).
+* Admins can use a **hybrid approach**:
 
-🎯 Preference Management
+  * Choose from predefined address types.
+  * Manually add new types for flexibility.
+* Remove or update outdated addresses.
 
-Set notification preferences (opt-in/out for email, SMS, etc.).
-View and update current preferences.
-Hybrid approach for types: predefined + admin-defined.
-🔁 Integration & REST API
+### 🎯 Preference Management
 
-RESTful API available for other systems to fetch and update customer data.
-Batch updates supported.
-📨 Notification Tracking
+* Set notification preferences (opt-in/out for email, SMS, etc.).
+* View and update current preferences.
+* Hybrid approach for types: predefined + admin-defined.
 
-Track delivery status of notifications: delivered, failed, pending.
-Endpoints to query status and generate delivery reports.
-🔍 Search & Filtering
+### 🔁 Integration & REST API
 
-Search customers by name, surname, contact info, and preferences.
-Sort and filter the customer list based on criteria.
-📊 Reporting
+* RESTful API available for other systems to fetch and update customer data.
+* Batch updates supported.
 
-Generate reports on customer data (e.g., opt-in stats).
-Notification delivery rate statistics.
-⚙️ Project Structure
+### 📨 Notification Tracking
 
-User: Represents admins and customer data.
+* Track delivery status of notifications: `delivered`, `failed`, `pending`.
+* Endpoints to query status and generate delivery reports.
 
-Address & AddressType: Stores various types of contact details.
+### 🔍 Search & Filtering
 
-Preference & PreferenceType: Represents user opt-in/out settings.
+* Search customers by name, surname, contact info, and preferences.
+* Sort and filter the customer list based on criteria.
 
-Notification: Tracks the status of message deliveries.
+### 📊 Reporting
 
-DTOs: Used for request/response data exchange.
+* Generate reports on customer data (e.g., opt-in stats).
+* Notification delivery rate statistics.
 
-Controllers: Manage web pages and REST endpoints.
+## ⚙️ Project Structure
 
-Services: Contain business logic for user, address, and preference handling.
+`User`: Represents admins and customer data.
 
-Repositories: Spring Data JPA for DB access.
+ `Address` & `AddressType`: Stores various types of contact details.
 
-SecurityConfig: Secures endpoints with role-based access.
+ `Preference` & `PreferenceType`: Represents user opt-in/out settings.
 
-🔐 API Security for Microservice Communication
+ `Notification`: Tracks the status of message deliveries.
 
-As i saw the primary role was to manage customer contact data, addresses, and notification preferences.
+ `DTOs`: Used for request/response data exchange.
 
-/api/** Endpoints — why i used SYSTEM Role?
+ `Controllers`: Manage web pages and REST endpoints.
 
-The following API endpoints are intended to be accessed only by external services within the ecosystem:
+ `Services`: Contain business logic for user, address, and preference handling.
 
-/api/notifications/** /api/preferences/** /api/address/**
+ `Repositories`: Spring Data JPA for DB access.
 
-I used security using .hasRole("SYSTEM")**, which means:
+ `SecurityConfig`: Secures endpoints with role-based access.
 
-Only users or services authenticated with the SYSTEM role can access these endpoints. This ensures that only trusted backend services such as notification dispatchers can call sensitive endpoints like /track, /update, etc.
+## 🔐 API Security for Microservice Communication
 
-🔐 Example Security Configuration
+As i saw the primary role was to manage customer contact data, addresses, and notification preferences. 
 
+## `/api/**` Endpoints — why i used SYSTEM Role?
+
+The following API endpoints are **intended to be accessed only by external services** within the ecosystem:
+
+ `/api/notifications/**`
+ `/api/preferences/**`
+ `/api/address/**`
+
+I used  security using `.hasRole("SYSTEM")`**, which means:
+
+ Only users or services authenticated with the `SYSTEM` role can access these endpoints.
+This ensures that only trusted backend services  such as notification dispatchers can call sensitive endpoints like `/track`, `/update`, etc.
+
+### 🔐 Example Security Configuration
+
+```java
 .requestMatchers("/api/notifications/**").hasRole("SYSTEM")
-Example SYSTEM User for Test
+```
 
+
+###  Example SYSTEM User for Test
+
+```java
 @Bean
 public UserDetailsService userDetailsService(PasswordEncoder encoder) {
     UserDetails systemUser = User.withUsername("notifier")
@@ -94,17 +108,35 @@ public UserDetailsService userDetailsService(PasswordEncoder encoder) {
 
     return new InMemoryUserDetailsManager(systemUser);
 }
-⚙️ Setup
+```
 
-Clone the repository:
+
+### ⚙️ Setup
+
+1. Clone the repository:
+
+```bash
 git clone https://github.com/phutko555/NotifyCenter.git
 cd notifications
-Configure the database connection in application.yml or application.properties:
+```
+
+2. Configure the database connection in `application.yml` or `application.properties`:
+
+```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/notifications
 spring.datasource.username=youruser
 spring.datasource.password=yourpassword
-Run the application:
+```
+
+3. Run the application:
+
+```bash
 ./mvnw spring-boot:run
-Access it in your browser:
-Login: http://localhost:8666/login
-Admin Dashboard: http://localhost:8666/admin/dashboard
+```
+
+4. Access it in your browser:
+
+* Login: `http://localhost:8666/login`
+* Admin Dashboard: `http://localhost:8666/admin/dashboard`
+
+
